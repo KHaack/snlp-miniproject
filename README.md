@@ -28,6 +28,10 @@ edit DefaultTasksMax=128
 docker-compose up
 ```
 
+## access kibana
+
+http://localhost:5601
+
 ## run tests
 
 ```shell

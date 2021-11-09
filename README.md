@@ -21,10 +21,25 @@ systemctl show --property DefaultTasksMax
 vim /etc/systemd/system.conf
 edit DefaultTasksMax=128
 ```
-  
+
 ## start docker container
 
-```powershell
+```shell
 docker-compose up
+```
+
+## run tests
+
+```shell
+mvn clean test
+```
+
+## run spring
+
+```shell
 mvn spring-boot:run
 ```
+
+## test if the server is running
+
+http://localhost:8080/api/ping

@@ -15,7 +15,7 @@
         <java.version>1.8</java.version>
         <spring.core.version>5.3.11</spring.core.version>
         <spring.boot.version>2.5.4</spring.boot.version>
-        <elastic.version>4.2.4</elastic.version>
+        <lucene.version>7.7.0</lucene.version>
         <junit.jupiter.version>5.7.2</junit.jupiter.version>
     </properties>
 
@@ -64,11 +64,17 @@
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- elasticsearch -->
+        <!-- lucene -->
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-elasticsearch</artifactId>
-            <version>${elastic.version}</version>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>${lucene.version}</version>
         </dependency>
 
         <!-- testing -->
@@ -99,42 +105,42 @@
             <version>${spring.boot.version}</version>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- nlp libraries -->
         <dependency>
-			<groupId>edu.stanford.nlp</groupId>
-			<artifactId>stanford-corenlp</artifactId>
-			<version>4.3.1</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>edu.stanford.nlp</groupId>
-			<artifactId>stanford-corenlp</artifactId>
-			<version>4.3.1</version>
-			<classifier>models</classifier>
-		</dependency>
-		
-		<dependency>
-			<groupId>edu.stanford.nlp</groupId>
-			<artifactId>stanford-corenlp</artifactId>
-			<version>4.3.1</version>
-			<classifier>models-english</classifier>
-		</dependency>
-		
-		<dependency>
-			<groupId>edu.stanford.nlp</groupId>
-			<artifactId>stanford-corenlp</artifactId>
-			<version>4.3.1</version>
-			<classifier>models-english-kbp</classifier>
-		</dependency>
-		
-		<!-- Jena - library to file RDF files -->
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-core</artifactId>
-			<version>4.2.0</version>
-		</dependency>
-		
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.3.1</version>
+            <classifier>models</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.3.1</version>
+            <classifier>models-english</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.3.1</version>
+            <classifier>models-english-kbp</classifier>
+        </dependency>
+
+        <!-- Jena - library to file RDF files -->
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
     </dependencies>
 
 

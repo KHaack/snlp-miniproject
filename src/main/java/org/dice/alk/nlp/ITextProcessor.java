@@ -1,6 +1,6 @@
 package org.dice.alk.nlp;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * The classes implementing this interface should reflect different ways of
@@ -16,6 +16,6 @@ public interface ITextProcessor {
 	 * @param input Input sentence.
 	 * @return 		The parsed result.
 	 */
-	List<String> processTextInput(String input);
+	Set<String> processTextInput(String input);
 
 }

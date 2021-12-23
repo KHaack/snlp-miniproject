@@ -36,11 +36,15 @@ public class IOUtils {
 		Set<Sentence> sentences = new HashSet<>();
 		try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
 			String line = br.readLine();
+			// because we want to ignore the 1st row FIXME
+			line = br.readLine();
 			while (line != null) {
-				// because we want to ignore the 1st row
-				line = br.readLine();
+				if(line.isBlank()) {
+					continue;
+				}
 				String[] elements = line.split("\t");
 				sentences.add(Sentence.createSentence(elements));
+				line = br.readLine();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

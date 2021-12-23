@@ -9,14 +9,15 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-public class FactCheckerServiceTest {
+public class RequestServiceTest {
 
     @Autowired
-    private FactCheckerService service;
+    private RequestService service;
 
     @Test
-    public void testAnnotator() {
-
+    public void testFetch() {
+        String content = service.fetch("https://en.wikipedia.org/wiki/Elon_Musk");
+        System.out.println(content);
     }
 
 }

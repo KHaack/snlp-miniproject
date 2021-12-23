@@ -33,13 +33,11 @@ public class AlkApiController {
 
     @RequestMapping(value = "/fetchText", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public String fetch() {
-        String content = service.fetch("https://en.wikipedia.org/wiki/Elon_Musk");
-        return content;
+        return service.fetch("https://en.wikipedia.org/wiki/Elon_Musk");
     }
 
     @RequestMapping(value = "/fetchTable", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Map<String, String>  fetchTable() {
-        Map<String, String> content = service.fetchTable("https://en.wikipedia.org/wiki/Elon_Musk");
-        return content;
+        return service.fetchTable("https://en.wikipedia.org/wiki/Elon_Musk");
     }
 }

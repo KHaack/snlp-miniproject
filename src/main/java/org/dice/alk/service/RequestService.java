@@ -13,19 +13,19 @@ import java.util.Set;
 public class RequestService {
 
     public String fetch(String url) {
-        String content = "";
+        StringBuilder content = new StringBuilder();
         try {
             Document document = Jsoup.connect(url).get();
             Elements elements = document.select("#bodyContent .mw-parser-output p");
             for (Element element:
                     elements) {
-                content+=element.text();
+                content.append(element.text());
             }
         } catch (IOException | Error e) {
             e.printStackTrace();
         }
 
-        return content;
+        return content.toString();
     }
 
 }

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Year;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/")
 @Validated
@@ -28,9 +31,15 @@ public class AlkApiController {
         return true;
     }
 
-    @RequestMapping(value = "/fecthTest", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String fectch() {
+    @RequestMapping(value = "/fetchText", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String fetch() {
         String content = service.fetch("https://en.wikipedia.org/wiki/Elon_Musk");
+        return content;
+    }
+
+    @RequestMapping(value = "/fetchTable", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public Map<String, String>  fetchTable() {
+        Map<String, String> content = service.fetchTable("https://en.wikipedia.org/wiki/Elon_Musk");
         return content;
     }
 }

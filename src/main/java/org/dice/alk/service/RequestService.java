@@ -7,6 +7,9 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -26,6 +29,29 @@ public class RequestService {
         }
 
         return content.toString();
+    }
+
+
+    public Map<String, String> fetchTable(String url) {
+        Map<String, String> content = new HashMap<>();
+        try {
+            Document document = Jsoup.connect(url).get();
+            Elements elements = document.select(".infobox.vcard tr");
+            for (Element element:
+                    elements) {
+
+                Elements th = element.getElementsByTag("th");
+                Elements td = element.getElementsByTag("td");
+
+                if(!th.isEmpty() && !td.isEmpty()){
+                    content.put(th.text(), td.text());
+                }
+            }
+        } catch (IOException | Error e) {
+            e.printStackTrace();
+        }
+
+        return content;
     }
 
 }

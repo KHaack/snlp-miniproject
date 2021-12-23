@@ -1,13 +1,12 @@
-package org.dice.alk.service;
+package org.dice.alk.model;
 
 public class TagMeSpot {
     private String spot;
-    private int start;
-    private double link_probability;
-    private double rho;
-    private int end;
     private int id;
     private String title;
+    private int start;
+    private int end;
+    private double rho;
 
     public String getSpot() {
         return spot;
@@ -23,14 +22,6 @@ public class TagMeSpot {
 
     public void setStart(int start) {
         this.start = start;
-    }
-
-    public double getLink_probability() {
-        return link_probability;
-    }
-
-    public void setLink_probability(double link_probability) {
-        this.link_probability = link_probability;
     }
 
     public double getRho() {

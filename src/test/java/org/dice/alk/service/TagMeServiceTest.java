@@ -1,5 +1,6 @@
 package org.dice.alk.service;
 
+import org.dice.alk.model.TagMeResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,24 +21,42 @@ public class TagMeServiceTest {
     private TagMeService tagMeService;
 
     @Test
-    public void tagmeTest() throws Exception {
-        String text = "obama visited uk";
+    public void tagme1Test() {
+        String text = "Obama visited U.K. in March";
         TagMeResult result = this.tagMeService.tag(text);
 
         assertEquals(2, result.getAnnotations().size());
         assertThat(result.getAnnotations(), hasItem(allOf(
-                hasProperty("spot", equalTo("uk")),
-                hasProperty("title", equalTo("United Kingdom")),
+                hasProperty("spot", equalTo("U.K.")),
+                hasProperty("title", equalTo("United_Kingdom")),
                 hasProperty("id", equalTo(31717)),
                 hasProperty("start", equalTo(14)),
-                hasProperty("end", equalTo(16))
+                hasProperty("end", equalTo(18))
         )));
         assertThat(result.getAnnotations(), hasItem(allOf(
-                hasProperty("spot", equalTo("obama")),
-                hasProperty("title", equalTo("Barack Obama")),
+                hasProperty("spot", equalTo("Obama")),
+                hasProperty("title", equalTo("Barack_Obama")),
                 hasProperty("id", equalTo(534366)),
                 hasProperty("start", equalTo(0)),
                 hasProperty("end", equalTo(5))
         )));
+    }
+
+    @Test
+    public void tagme2Test() {
+        String text = "Oak Hill, West Virginia is Hank Williams' last place.";
+        TagMeResult result = this.tagMeService.tag(text);
+
+        assertEquals(3, result.getAnnotations().size());
+        assertThat(result.getAnnotations(), hasItem(allOf(
+                hasProperty("title", equalTo("West_Virginia"))
+        )));
+        assertThat(result.getAnnotations(), hasItem(allOf(
+                hasProperty("title", equalTo("Hank_Williams"))
+        )));
+        assertThat(result.getAnnotations(), hasItem(allOf(
+                hasProperty("title", equalTo("Oak_Hill,_West_Virginia"))
+        )));
+
     }
 }

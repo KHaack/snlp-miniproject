@@ -1,12 +1,14 @@
 # snlp-miniproject
 
 ## dev installation
-  - java 8
-  - docker
-  - docker-compose
-  - maven 3.1 or higher
- 
+
+- java 11
+- docker
+    - docker-compose
+    - maven 3.1 or higher
+
 ## running docker on windows/wsl2 config
+
 ```powershell
 wsl -d docker-desktop
 sysctl -w vm.max_map_count=262144

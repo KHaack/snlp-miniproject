@@ -1,11 +1,15 @@
 package org.dice.alk.io;
 
-import org.apache.jena.rdf.model.Model;
-import org.dice.alk.model.Sentence;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.jena.rdf.model.Model;
+import org.dice.alk.model.Sentence;
 
 /**
  * Input and output util methods.
@@ -36,11 +40,15 @@ public class IOUtils {
 		Set<Sentence> sentences = new HashSet<>();
 		try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
 			String line = br.readLine();
+			// because we want to ignore the 1st row
+			line = br.readLine();
 			while (line != null) {
-				// because we want to ignore the 1st row
-				line = br.readLine();
-				String[] elements = line.split("\\s+");
+				if(line.isBlank()) {
+					continue;
+				}
+				String[] elements = line.split("\t");
 				sentences.add(Sentence.createSentence(elements));
+				line = br.readLine();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

@@ -15,7 +15,12 @@ public class FactCheckerServiceTest {
     private FactCheckerService service;
 
     @Test
-    public void testAnnotator() {
+    public void testFactChecker() {
+    	String inputFile = "C:\\Users\\Nikit\\Downloads\\SNLP2020_training.tsv";
+    	String outputFile = "temp.nt";
+    	
+    	this.service.factCheck(inputFile, outputFile);
+    	
 
     }
 

@@ -44,9 +44,12 @@ public class FactCheckerService {
         for (Sentence curSent : sentences) {
 
             // process input text
-            inputProcessor.processTextInput(curSent.getSentenceText());
+            inputProcessor.processTextInput(curSent);
 
             // TODO assign score
+            // TODO if only one wikipedia page was found, ie the api wasn't able
+            // to identify all of the present entities, maybe search for the 
+            // unidentified text
 
             model.add(curSent.getStatementFromSentence());
         }

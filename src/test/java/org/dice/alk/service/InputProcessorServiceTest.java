@@ -40,7 +40,6 @@ public class InputProcessorServiceTest {
 		Sentence sentence = new Sentence(0, text);
 		this.service.processTextInput(sentence);
 		String pred = sentence.getPredicate();
-		System.out.println(pred);
 		assertThat(pred, is("last place"));
 	}
 

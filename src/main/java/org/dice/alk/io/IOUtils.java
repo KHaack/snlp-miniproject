@@ -39,7 +39,7 @@ public class IOUtils {
 			while (line != null) {
 				// because we want to ignore the 1st row
 				line = br.readLine();
-				String[] elements = line.split("\\s+");
+				String[] elements = line.split("\t");
 				sentences.add(Sentence.createSentence(elements));
 			}
 		} catch (FileNotFoundException e) {

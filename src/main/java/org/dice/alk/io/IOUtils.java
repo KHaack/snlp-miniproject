@@ -24,7 +24,7 @@ public class IOUtils {
 	 */
 	public static void writeResultsToFile(Model model, String savePath) {
 		try (FileWriter out = new FileWriter(savePath)) {
-			model.write(out, "NT");
+			model.write(out, "N-TRIPLES");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

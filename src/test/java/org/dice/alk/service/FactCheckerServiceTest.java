@@ -16,10 +16,10 @@ public class FactCheckerServiceTest {
 
     @Test
     public void testFactChecker() {
-//    	String inputFile = "C:\\Users\\Nikit\\Downloads\\SNLP2020_training.tsv";
-//    	String outputFile = "temp.nt";
-//    	
-//    	this.service.factCheck(inputFile, outputFile);
+    	String inputFile = "SNLP2020_training.tsv";
+    	String outputFile = "temp.nt";
+    	
+    	this.service.factCheck(inputFile, outputFile);
     	
 
     }

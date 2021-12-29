@@ -36,11 +36,12 @@ public class InputProcessorServiceTest {
 	@Test
 	public void testAnnotator() {
 		// TODO just use parameterized runs
-		String text = "Queluz, Portugal is Carlota Joaquina of Spain's last place.";
+		String text = "Marvin Williams's team is Charlotte Hornets";
 		Sentence sentence = new Sentence(0, text);
 		this.service.processTextInput(sentence);
 		String pred = sentence.getPredicate();
-		assertThat(pred, is("last place"));
+		System.out.println(pred);
+		assertThat(pred, is("team"));
 	}
 
 }

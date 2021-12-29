@@ -1,10 +1,6 @@
 package org.dice.alk.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.dice.alk.model.Sentence;
@@ -49,7 +45,7 @@ public class InputProcessorService {
 	/**
 	 * Returns the present entities ordered by appearance position
 	 * 
-	 * @param input
+	 * @param sentence
 	 * @return
 	 */
 	public void processTextInput(Sentence sentence) {
@@ -198,6 +194,15 @@ public class InputProcessorService {
 		List<String> wikipediaPaths = new ArrayList<>();
 		for (TagMeSpot spot : relevantItems) {
 			wikipediaPaths.add(wikipediaEndpoint + spot.getTitle());
+		}
+		return wikipediaPaths;
+	}
+
+	public Map<String, String> getWikipediaURLSAsSet(String input) {
+		List<TagMeSpot> relevantItems = this.tagMeService.tag(input).getAnnotations();
+		Map<String, String> wikipediaPaths = new HashMap<>();
+		for (TagMeSpot spot : relevantItems) {
+			wikipediaPaths.put(spot.getSpot(), wikipediaEndpoint + spot.getTitle());
 		}
 		return wikipediaPaths;
 	}

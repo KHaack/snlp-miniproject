@@ -15,6 +15,12 @@ import java.util.Set;
 @Service
 public class RequestService {
 
+    /**
+     * Get the text content of a wikipedia page
+     *
+     * @param url
+     * @return
+     */
     public String fetch(String url) {
         StringBuilder content = new StringBuilder();
         try {
@@ -31,7 +37,12 @@ public class RequestService {
         return content.toString();
     }
 
-
+    /**
+     * Get the table about content of a wikipedia page
+     *
+     * @param url
+     * @return
+     */
     public Map<String, String> fetchTable(String url) {
         Map<String, String> content = new HashMap<>();
         try {

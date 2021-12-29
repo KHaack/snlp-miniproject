@@ -54,8 +54,10 @@ public class FactCheckerService {
                 for (Map.Entry<String, String> secondLoopEntry : res.entrySet()) {
                     String wikipediaPageContent = request.fetch(entry.getValue());
                     if(!Objects.equals(entry.getKey(), secondLoopEntry.getKey())){
-                        if(wikipediaPageContent.contains(secondLoopEntry.getKey()))
+                        if(wikipediaPageContent.contains(secondLoopEntry.getKey())){
                             found = true;
+                            break;
+                        }
                     }
 
                 }
@@ -64,11 +66,6 @@ public class FactCheckerService {
                 curSent.setScore(1.0);
             else
                 curSent.setScore(0.0);
-            // TODO assign score
-            // TODO if only one wikipedia page was found, ie the api wasn't able
-            // to identify all of the present entities, maybe search for the
-            // unidentified text
-
             model.add(curSent.getStatementFromSentence());
         }
 

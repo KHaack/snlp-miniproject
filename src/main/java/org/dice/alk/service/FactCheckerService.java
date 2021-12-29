@@ -76,7 +76,7 @@ public class FactCheckerService {
     }
 
     /**
-     * Fact checks sentences
+     * Fact checks sentences to return them as list for the browser
      *
      * @param inputFile
      * @return

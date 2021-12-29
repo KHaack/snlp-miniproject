@@ -198,6 +198,12 @@ public class InputProcessorService {
 		return wikipediaPaths;
 	}
 
+	/**
+	 * Returns for a given text it return a map containing the spot and the wikipedia of the spot
+	 *
+	 * @param input
+	 * @return
+	 */
 	public Map<String, String> getWikipediaURLSAsSet(String input) {
 		List<TagMeSpot> relevantItems = this.tagMeService.tag(input).getAnnotations();
 		Map<String, String> wikipediaPaths = new HashMap<>();

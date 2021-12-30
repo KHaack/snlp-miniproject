@@ -46,6 +46,21 @@ public class WordNetService {
         }
     }
 
+    /**
+     * Make a wordnet request.
+     * <p>
+     * antonyms: Give me the opposite
+     * synonyms: Give me words with the same meaning
+     * hyponyms: Give me the sub-term
+     * hypernyms: Give me the general form
+     * substance_holonyms: What is this part of
+     * substance_meronyms: What are parts of this
+     * Causes: What is this the cause of
+     *
+     * @param request
+     * @param word
+     * @return
+     */
     public WordNetResult[] get(WordNetRequest request, String word) {
         URI uri = buildURI(request, word);
         LOGGER.info("rest call for '{}'", uri.toString());

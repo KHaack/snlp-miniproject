@@ -16,8 +16,8 @@ public class FactCheckerServiceTest {
 
     @Test
     public void testFactChecker() {
-    	String inputFile = "/media/ltphen/Ulife/project/school/snlp/snlp-miniproject/data/SNLP2020_training_test.tsv";
-    	String outputFile = "/media/ltphen/Ulife/project/school/snlp/snlp-miniproject/data/SNLP2020_training_result.tsv";
+    	String inputFile = "./data/SNLP2020_training_test.tsv";
+    	String outputFile = "./data/SNLP2020_training_result.tsv";
     	this.service.factCheck(inputFile, outputFile);
 
     }

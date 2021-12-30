@@ -48,8 +48,8 @@ public class AlkApiController {
 
     @RequestMapping(value = "/testFactCheck", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<String> testFactCheck() {
-        String inputFile = "/media/ltphen/Ulife/project/school/snlp/snlp-miniproject/data/SNLP2020_training_test.tsv";
-        String outputFile = "/media/ltphen/Ulife/project/school/snlp/snlp-miniproject/data/SNLP2020_training_result.tsv";
+        String inputFile = "./data/SNLP2020_training_test.tsv";
+        String outputFile = "./data/SNLP2020_training_result.tsv";
         return this.factCheckerService.factCheckAndReturnAList(inputFile);
     }
 

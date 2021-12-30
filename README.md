@@ -49,3 +49,7 @@ mvn spring-boot:run
 ## test if the server is running
 
 http://localhost:8080/api/ping
+
+## licenses
+
+https://wordnet.princeton.edu/license-and-commercial-use

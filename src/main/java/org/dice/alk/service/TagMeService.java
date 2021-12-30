@@ -24,6 +24,7 @@ public class TagMeService {
      * The logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TagMeService.class);
+
     @Value("${tagme.url.scheme}")
     private String scheme;
     @Value("${tagme.url.host}")
@@ -32,6 +33,7 @@ public class TagMeService {
     private String path;
     @Value("${tagme.url.apiKey}")
     private String apiKey;
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -59,7 +61,7 @@ public class TagMeService {
             TagMeResult result = this.restTemplate.getForObject(builder.build(), TagMeResult.class);
             return result;
         } catch (Exception ex) {
-            throw new TagMeException("unable toget response from " + builder, ex);
+            throw new TagMeException("unable to get response from " + builder, ex);
         }
     }
 }

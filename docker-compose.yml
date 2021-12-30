@@ -33,6 +33,12 @@ services:
     depends_on:
       - elasticsearch-snlp
 
+  wordnet:
+    image: jacopofar/wordnet-as-a-service:latest
+    container_name: wordnet
+    ports:
+      - 5679:5679
+
 volumes:
   elasticsearch-data:
     driver: local

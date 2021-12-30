@@ -1,40 +1,40 @@
 package org.dice.alk.model;
 
 public class TagMeMetrics {
-    private int time_tokenize;
-    private int time_spot;
-    private int time_disambiguation;
-    private int time_evaluation;
+    private long time_tokenize;
+    private long time_spot;
+    private long time_disambiguation;
+    private long time_evaluation;
 
-    public int getTime_tokenize() {
+    public long getTime_tokenize() {
         return time_tokenize;
     }
 
-    public void setTime_tokenize(int time_tokenize) {
+    public void setTime_tokenize(long time_tokenize) {
         this.time_tokenize = time_tokenize;
     }
 
-    public int getTime_spot() {
+    public long getTime_spot() {
         return time_spot;
     }
 
-    public void setTime_spot(int time_spot) {
+    public void setTime_spot(long time_spot) {
         this.time_spot = time_spot;
     }
 
-    public int getTime_disambiguation() {
+    public long getTime_disambiguation() {
         return time_disambiguation;
     }
 
-    public void setTime_disambiguation(int time_disambiguation) {
+    public void setTime_disambiguation(long time_disambiguation) {
         this.time_disambiguation = time_disambiguation;
     }
 
-    public int getTime_evaluation() {
+    public long getTime_evaluation() {
         return time_evaluation;
     }
 
-    public void setTime_evaluation(int time_evaluation) {
+    public void setTime_evaluation(long time_evaluation) {
         this.time_evaluation = time_evaluation;
     }
 }

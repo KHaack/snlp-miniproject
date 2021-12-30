@@ -9,17 +9,15 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-public class FactCheckerServiceTest {
+public class RequestServiceTest {
 
     @Autowired
-    private FactCheckerService service;
+    private RequestService service;
 
     @Test
-    public void testFactChecker() {
-    	String inputFile = "/media/ltphen/Ulife/project/school/snlp/snlp-miniproject/data/SNLP2020_training_test.tsv";
-    	String outputFile = "/media/ltphen/Ulife/project/school/snlp/snlp-miniproject/data/SNLP2020_training_result.tsv";
-    	this.service.factCheck(inputFile, outputFile);
-
+    public void testFetch() {
+        String content = service.fetch("https://en.wikipedia.org/wiki/Elon_Musk");
+        System.out.println(content);
     }
 
 }

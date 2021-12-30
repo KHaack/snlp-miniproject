@@ -1,6 +1,12 @@
 package org.dice.alk.model;
 
-import org.apache.jena.rdf.model.*;
+import java.util.List;
+
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
 
 /**
  * Holds the sentence identification elements
@@ -23,6 +29,16 @@ public class Sentence {
 	private double score;
 
 	/**
+	 * The sentence's entities
+	 */
+	private List<TagMeSpot> entities;
+
+	/**
+	 * The sentence's relation
+	 */
+	private String predicate;
+
+	/**
 	 * Constructor
 	 *
 	 * @param factID       The fact ID.
@@ -34,8 +50,8 @@ public class Sentence {
 	}
 
 	/**
-	 * Sentence factory method from a {@link String[]}.
-	 * It is assumed 0 to be the factID and 1 to be the sentence text.
+	 * Sentence factory method from a {@link String[]}. It is assumed 0 to be the
+	 * factID and 1 to be the sentence text.
 	 *
 	 * @param input
 	 * @return
@@ -78,4 +94,21 @@ public class Sentence {
 	public void setScore(double score) {
 		this.score = score;
 	}
+
+	public List<TagMeSpot> getEntities() {
+		return entities;
+	}
+
+	public void setEntities(List<TagMeSpot> entities) {
+		this.entities = entities;
+	}
+
+	public String getPredicate() {
+		return predicate;
+	}
+
+	public void setPredicate(String predicate) {
+		this.predicate = predicate;
+	}
+
 }

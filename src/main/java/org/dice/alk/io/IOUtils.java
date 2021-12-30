@@ -1,11 +1,15 @@
 package org.dice.alk.io;
 
-import org.apache.jena.rdf.model.Model;
-import org.dice.alk.model.Sentence;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.jena.rdf.model.Model;
+import org.dice.alk.model.Sentence;
 
 /**
  * Input and output util methods.
@@ -20,7 +24,7 @@ public class IOUtils {
 	 */
 	public static void writeResultsToFile(Model model, String savePath) {
 		try (FileWriter out = new FileWriter(savePath)) {
-			model.write(out, "NT");
+			model.write(out, "N-TRIPLES");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -36,7 +40,7 @@ public class IOUtils {
 		Set<Sentence> sentences = new HashSet<>();
 		try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
 			String line = br.readLine();
-			// because we want to ignore the 1st row FIXME
+			// because we want to ignore the 1st row
 			line = br.readLine();
 			while (line != null) {
 				if(line.isBlank()) {

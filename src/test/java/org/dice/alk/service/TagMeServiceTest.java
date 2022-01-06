@@ -46,6 +46,28 @@ public class TagMeServiceTest {
     }
 
     @Test
+    public void multipleTest() {
+        String text = "Barack Obama visited U.K. in March";
+        TagMeResult result = this.tagMeService.tag(text);
+
+        assertEquals(2, result.getAnnotations().size());
+        assertThat(result.getAnnotations(), hasItem(allOf(
+                hasProperty("spot", equalTo("U.K.")),
+                hasProperty("title", equalTo("United_Kingdom")),
+                hasProperty("id", equalTo(31717)),
+                hasProperty("start", equalTo(21)),
+                hasProperty("end", equalTo(25))
+        )));
+        assertThat(result.getAnnotations(), hasItem(allOf(
+                hasProperty("spot", equalTo("Barack Obama")),
+                hasProperty("title", equalTo("Barack_Obama")),
+                hasProperty("id", equalTo(534366)),
+                hasProperty("start", equalTo(0)),
+                hasProperty("end", equalTo(12))
+        )));
+    }
+
+    @Test
     public void tagme2Test() {
         String text = "Poul Anderson is The Boat of a Million Years' generator.";
 

@@ -1,7 +1,6 @@
 package org.dice.alk.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TagMeResult {
     private TagMeMetrics metrics;
@@ -21,5 +20,28 @@ public class TagMeResult {
 
     public void setAnnotations(List<TagMeSpot> annotations) {
         this.annotations = annotations;
+    }
+
+    /**
+     * Prunes duplicate pages from the API result.
+     *
+     * @return
+     */
+    public List<TagMeSpot> getPruneAnnotations() {
+        List<TagMeSpot> annotations = getAnnotations();
+
+        // no point in fixing if it's just 2
+        if (annotations.size() == 2)
+            return annotations;
+
+        // check if they have multiple mentions of the exact same page
+        Map<String, TagMeSpot> map = new HashMap<>();
+        annotations.forEach(spot -> map.putIfAbsent(spot.getTitle(), spot));
+        annotations = new ArrayList<>(map.values());
+
+        // decide on direction, consider the one with smallest start
+        Collections.sort(annotations, Comparator.comparingInt(TagMeSpot::getStart));
+
+        return annotations;
     }
 }

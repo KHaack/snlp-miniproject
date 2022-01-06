@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class is responsible for parsing and processing the input string.
@@ -61,7 +63,7 @@ public class InputProcessorService {
 		}
 
 		// sort multiple entities problem
-		List<TagMeSpot> entities = pruneDuplicates(result);
+		List<TagMeSpot> entities = result.getPruneAnnotations();
 		sentence.setEntities(entities);
 
 		// get predicate by subtracting the identified entities
@@ -94,30 +96,6 @@ public class InputProcessorService {
 			input = input.replaceAll(bl, " ");
 		}
 		return input;
-	}
-
-	/**
-	 * Prunes duplicate pages from the API result.
-	 * 
-	 * @param result
-	 * @return
-	 */
-	public List<TagMeSpot> pruneDuplicates(TagMeResult result) {
-		List<TagMeSpot> annotations = result.getAnnotations();
-
-		// no point in fixing if it's just 2
-		if (annotations.size() == 2)
-			return annotations;
-
-		// check if they have multiple mentions of the exact same page
-		Map<String, TagMeSpot> map = new HashMap<>();
-		annotations.forEach(spot -> map.putIfAbsent(spot.getTitle(), spot));
-		annotations = map.values().stream().collect(Collectors.toList());
-
-		// decide on direction, consider the one with smallest start
-		Collections.sort(annotations, (o1, o2) -> o1.getStart() - o2.getStart());
-
-		return annotations;
 	}
 
 	/**

@@ -56,18 +56,15 @@ public class InputProcessorService {
 
 		// get result from API and parse it
 		TagMeResult result = this.tagMeService.tag(input);
+		sentence.setEntities(result.getAnnotations());
 
 		// signal this sentence as false
 		if (result.getAnnotations().size() < 2) {
 			throw new InputProcessorException("not 2 entities found.");
 		}
 
-		// sort multiple entities problem
-		List<TagMeSpot> entities = result.getPruneAnnotations();
-		sentence.setEntities(entities);
-
 		// get predicate by subtracting the identified entities
-		String predicate = getPredicate(input, result.getAnnotations());
+		String predicate = this.getPredicate(input, result.getAnnotations());
 		sentence.setPredicate(predicate);
 	}
 

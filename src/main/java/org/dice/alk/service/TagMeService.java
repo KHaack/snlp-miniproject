@@ -59,6 +59,8 @@ public class TagMeService {
             LOGGER.info("rest call for '{}'", builder);
 
             TagMeResult result = this.restTemplate.getForObject(builder.build(), TagMeResult.class);
+            result.pruneAnnotations();
+
             return result;
         } catch (Exception ex) {
             throw new TagMeException("unable to get response from " + builder, ex);

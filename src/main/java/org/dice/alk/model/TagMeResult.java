@@ -24,15 +24,13 @@ public class TagMeResult {
 
     /**
      * Prunes duplicate pages from the API result.
-     *
-     * @return
      */
-    public List<TagMeSpot> getPruneAnnotations() {
+    public void pruneAnnotations() {
         List<TagMeSpot> annotations = getAnnotations();
 
         // no point in fixing if it's just 2
         if (annotations.size() == 2)
-            return annotations;
+            return;
 
         // check if they have multiple mentions of the exact same page
         Map<String, TagMeSpot> map = new HashMap<>();
@@ -42,6 +40,6 @@ public class TagMeResult {
         // decide on direction, consider the one with smallest start
         Collections.sort(annotations, Comparator.comparingInt(TagMeSpot::getStart));
 
-        return annotations;
+        this.annotations = annotations;
     }
 }

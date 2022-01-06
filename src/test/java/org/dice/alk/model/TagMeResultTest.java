@@ -2,8 +2,6 @@ package org.dice.alk.model;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,12 +41,12 @@ public class TagMeResultTest {
                 hasProperty("title", is("xxx")),
                 hasProperty("start", is(3)))));
 
-        List<TagMeSpot> spots = result.getPruneAnnotations();
-        assertEquals(2, spots.size());
-        assertThat(spots, hasItem(allOf(
+        result.pruneAnnotations();
+        assertEquals(2, result.getAnnotations().size());
+        assertThat(result.getAnnotations(), hasItem(allOf(
                 hasProperty("title", is("xxx")),
                 hasProperty("start", is(0)))));
-        assertThat(spots, hasItem(allOf(
+        assertThat(result.getAnnotations(), hasItem(allOf(
                 hasProperty("title", is("yyy")),
                 hasProperty("start", is(1)))));
     }

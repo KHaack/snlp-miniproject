@@ -15,7 +15,7 @@ public class FactCheckerService {
     @Autowired
     private InputProcessorService inputProcessor;
     @Autowired
-    private RequestService request;
+    private WikipediaService request;
 
     /**
      * Reads from file, fact checks and writes results to output file

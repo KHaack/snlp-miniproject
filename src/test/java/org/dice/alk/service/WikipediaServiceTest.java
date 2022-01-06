@@ -15,10 +15,10 @@ import static org.hamcrest.Matchers.hasEntry;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-public class RequestServiceTest {
+public class WikipediaServiceTest {
 
     @Autowired
-    private RequestService service;
+    private WikipediaService service;
 
     @Test
     public void festContentTest() {
@@ -29,7 +29,6 @@ public class RequestServiceTest {
     @Test
     public void festTableTest() {
         Map<String, String> table = service.fetchTable("https://en.wikipedia.org/wiki/Elon_Musk");
-
         assertThat(table, hasEntry("Education", "University of Pennsylvania (BS, BA)"));
     }
 

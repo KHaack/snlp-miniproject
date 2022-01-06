@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Service
-public class RequestService {
+public class WikipediaService {
 
     /**
      * Get the text content of a wikipedia page

@@ -1,7 +1,7 @@
 package org.dice.alk.controller;
 
 import org.dice.alk.service.FactCheckerService;
-import org.dice.alk.service.RequestService;
+import org.dice.alk.service.WikipediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Year;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class AlkApiController {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(AlkApiController.class);
     @Autowired
-    private RequestService service;
+    private WikipediaService service;
     @Autowired
     private FactCheckerService factCheckerService;
 

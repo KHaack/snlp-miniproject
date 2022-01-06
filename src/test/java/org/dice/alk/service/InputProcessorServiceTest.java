@@ -36,7 +36,7 @@ public class InputProcessorServiceTest {
         String text = "Marvin Williams's team is Charlotte Hornets";
         Sentence sentence = new Sentence(0, text);
 
-        this.service.processTextInput(sentence);
+        this.service.fillSentence(sentence);
         String pred = sentence.getPredicate();
 
         assertThat(pred, is("team"));

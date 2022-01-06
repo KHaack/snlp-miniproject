@@ -1,5 +1,8 @@
 package org.dice.alk.controller;
 
+import org.apache.jena.rdf.model.StmtIterator;
+import org.dice.alk.io.IOUtils;
+import org.dice.alk.model.Sentence;
 import org.dice.alk.service.FactCheckerService;
 import org.dice.alk.service.WikipediaService;
 import org.slf4j.Logger;
@@ -11,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/")
@@ -48,8 +53,14 @@ public class AlkApiController {
     @RequestMapping(value = "/testFactCheck", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<String> testFactCheck() {
         String inputFile = "./data/SNLP2020_training_test.tsv";
-        String outputFile = "./data/SNLP2020_training_result.tsv";
-        return this.factCheckerService.factCheckAndReturnAList(inputFile);
+        Set<Sentence> sentences = IOUtils.readFromFile(inputFile);
+
+        List<String> strings = new LinkedList<>();
+        StmtIterator it = this.factCheckerService.factCheck(sentences).listStatements();
+        while (it.hasNext()) {
+            strings.add(it.nextStatement().getString());
+        }
+        return strings;
     }
 
 }

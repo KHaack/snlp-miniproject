@@ -46,11 +46,11 @@ public class InputProcessorService {
 
 	/**
 	 * Returns the present entities ordered by appearance position
-	 * 
+	 *
 	 * @param sentence
 	 * @return
 	 */
-	public void processTextInput(Sentence sentence) {
+	public void fillSentence(Sentence sentence) {
 		// preprocess input, remove all unnecessary stuff
 		String input = this.cleanSentence(sentence.getSentenceText());
 
@@ -106,22 +106,20 @@ public class InputProcessorService {
 	 * @return
 	 */
 	public String getPredicate(String input, List<TagMeSpot> relevantItems) {
-		String predicate = new String(input);
-
 		// remove mentions of entities
 		for (TagMeSpot spot : relevantItems) {
-			predicate = predicate.replace(spot.getSpot(), "");
+			input = input.replace(spot.getSpot(), "");
 		}
 
 		// remove extra useless stuff
 		for (String bl : UNWANTED_PRED) {
-			predicate = predicate.replaceAll(bl, "");
+			input = input.replaceAll(bl, "");
 		}
 
 		// FIXME this fails if we can't identify all entities, this dataset has only
 		// 10 relations or so, maybe we can just search for them directly
 
-		return predicate.trim();
+		return input.trim();
 	}
 	
 	/**
@@ -161,16 +159,17 @@ public class InputProcessorService {
 	/**
 	 * Returns for a given text it return a map containing the spot and the wikipedia of the spot
 	 *
-	 * @param input
+	 * @param sentence
 	 * @return
 	 */
-	public Map<String, String> getWikipediaURLSAsSet(String input) {
-		List<TagMeSpot> relevantItems = this.tagMeService.tag(input).getAnnotations();
+	public Map<String, String> getWikipediaURLSAsSet(Sentence sentence) {
+		List<TagMeSpot> relevantItems = sentence.getEntities();
 		Map<String, String> wikipediaPaths = new HashMap<>();
 
 		for (TagMeSpot spot : relevantItems) {
 			wikipediaPaths.put(spot.getSpot(), wikipediaEndpoint + spot.getTitle());
 		}
+
 		return wikipediaPaths;
 	}
 }

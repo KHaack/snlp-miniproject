@@ -7,7 +7,9 @@ import org.dice.alk.model.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class FactCheckerService {
@@ -28,7 +30,7 @@ public class FactCheckerService {
         Set<Sentence> sentences = IOUtils.readFromFile(inputFile);
 
         // fact check all sentences and get result as model
-        Model model = factCheck(sentences);
+        Model model = this.factCheck(sentences);
 
         // write results to file
         IOUtils.writeResultsToFile(model, outputFile);
@@ -40,15 +42,13 @@ public class FactCheckerService {
      * @param sentences
      * @return
      */
-    private Model factCheck(Set<Sentence> sentences) {
+    public Model factCheck(Set<Sentence> sentences) {
         Model model = ModelFactory.createDefaultModel();
 
         for (Sentence sentence : sentences) {
             // process input text
-            this.inputProcessor.processTextInput(sentence);
-            Map<String, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(sentence.getSentenceText());
-
-            double score = this.searchForFact(urlSet);
+            this.inputProcessor.fillSentence(sentence);
+            double score = this.searchForFact(sentence);
             sentence.setScore(score);
 
             model.add(sentence.getStatementFromSentence());
@@ -60,10 +60,12 @@ public class FactCheckerService {
     /**
      * Search for facts.
      *
-     * @param urlSet
+     * @param sentence
      * @return
      */
-    private double searchForFact(Map<String, String> urlSet) {
+    private double searchForFact(Sentence sentence) {
+        Map<String, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(sentence);
+
         boolean found = false;
 
         for (Map.Entry<String, String> entry : urlSet.entrySet()) {
@@ -81,34 +83,6 @@ public class FactCheckerService {
         }
 
         return found ? 1.0 : 0.0;
-    }
-
-    /**
-     * Fact checks sentences to return them as list for the browser
-     *
-     * @param inputFile
-     * @return
-     */
-    public List<String> factCheckAndReturnAList(String inputFile) {
-        // read sentences from given file
-        Set<Sentence> sentences = IOUtils.readFromFile(inputFile);
-
-        // fact check all sentences and get result as model
-        List<String> model = new ArrayList<>();
-
-        for (Sentence sentence : sentences) {
-            // process input text
-            this.inputProcessor.processTextInput(sentence);
-            Map<String, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(sentence.getSentenceText());
-
-            // classic way, loop a Map
-            double score = this.searchForFact(urlSet);
-            sentence.setScore(score);
-
-            model.add(sentence.getFactID() + " " + sentence.getSentenceText() + " " + sentence.getScore());
-        }
-
-        return model;
     }
 
 }

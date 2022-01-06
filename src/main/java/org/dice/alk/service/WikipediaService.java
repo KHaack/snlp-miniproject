@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,6 +13,9 @@ import java.util.Map;
 
 @Service
 public class WikipediaService {
+
+    @Value("${wikipedia.timeout}")
+    private int timeout;
 
     /**
      * Get the text content of a wikipedia page
@@ -22,7 +26,7 @@ public class WikipediaService {
     public String fetch(String url) {
         StringBuilder content = new StringBuilder();
         try {
-            Document document = Jsoup.connect(url).get();
+            Document document = Jsoup.connect(url).timeout(this.timeout).get();
             Elements elements = document.select("#bodyContent .mw-parser-output p");
             for (Element element:
                     elements) {

@@ -18,7 +18,7 @@ public class FactCheckerServiceTest {
     public void testFactChecker() {
     	String inputFile = "./data/SNLP2020_training_test.tsv";
     	String outputFile = "./data/SNLP2020_training_result.tsv";
-    	this.service.factCheck(inputFile, outputFile);
+    	//this.service.factCheck(inputFile, outputFile);
 
     }
 

@@ -1,11 +1,5 @@
 package org.dice.alk.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-
-import java.util.List;
-
 import org.dice.alk.model.Sentence;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,35 +7,29 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 public class InputProcessorServiceTest {
 
-	private final static String WIKIPEDIA_EP = "https://en.wikipedia.org/wiki/";
-	@Autowired
-	private InputProcessorService service;
+    private final static String WIKIPEDIA_EP = "https://en.wikipedia.org/wiki/";
+    @Autowired
+    private InputProcessorService service;
 
-	@Test
-	public void testWikification() {
-		String text = "Oak Hill, West Virginia is Hank Williams' last place.";
 
-		List<String> res = this.service.getAllWikipediaPaths(text);
+    @Test
+    public void testAnnotator() {
+        // TODO just use parameterized runs
+        String text = "Marvin Williams's team is Charlotte Hornets";
+        Sentence sentence = new Sentence(0, text);
 
-		assertThat(res, containsInAnyOrder(WIKIPEDIA_EP + "Hank_Williams", WIKIPEDIA_EP + "Oak_Hill,_West_Virginia",
-				WIKIPEDIA_EP + "West_Virginia"));
-	}
+        this.service.processTextInput(sentence);
+        String pred = sentence.getPredicate();
 
-	
-	@Test
-	public void testAnnotator() {
-		// TODO just use parameterized runs
-		String text = "Marvin Williams's team is Charlotte Hornets";
-		Sentence sentence = new Sentence(0, text);
-		this.service.processTextInput(sentence);
-		String pred = sentence.getPredicate();
-		System.out.println(pred);
-		assertThat(pred, is("team"));
-	}
+        assertThat(pred, is("team"));
+    }
 
 }

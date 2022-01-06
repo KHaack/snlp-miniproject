@@ -15,7 +15,7 @@ public class FactCheckerService {
     @Autowired
     private InputProcessorService inputProcessor;
     @Autowired
-    private WikipediaService request;
+    private WikipediaService wikipedia;
 
     /**
      * Reads from file, fact checks and writes results to output file
@@ -43,33 +43,44 @@ public class FactCheckerService {
     private Model factCheck(Set<Sentence> sentences) {
         Model model = ModelFactory.createDefaultModel();
 
-        for (Sentence curSent : sentences) {
-
+        for (Sentence sentence : sentences) {
             // process input text
-            inputProcessor.processTextInput(curSent);
-            Map<String, String> res = inputProcessor.getWikipediaURLSAsSet(curSent.getSentenceText());
-            // classic way, loop a Map
-            boolean found = false;
-            for (Map.Entry<String, String> entry : res.entrySet()) {
-                for (Map.Entry<String, String> secondLoopEntry : res.entrySet()) {
-                    String wikipediaPageContent = request.fetch(entry.getValue());
-                    if(!Objects.equals(entry.getKey(), secondLoopEntry.getKey())){
-                        if(wikipediaPageContent.contains(secondLoopEntry.getKey())){
-                            found = true;
-                            break;
-                        }
-                    }
+            this.inputProcessor.processTextInput(sentence);
+            Map<String, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(sentence.getSentenceText());
 
-                }
-            }
-            if(found)
-                curSent.setScore(1.0);
-            else
-                curSent.setScore(0.0);
-            model.add(curSent.getStatementFromSentence());
+            double score = this.searchForFact(urlSet);
+            sentence.setScore(score);
+
+            model.add(sentence.getStatementFromSentence());
         }
 
         return model;
+    }
+
+    /**
+     * Search for facts.
+     *
+     * @param urlSet
+     * @return
+     */
+    private double searchForFact(Map<String, String> urlSet) {
+        boolean found = false;
+
+        for (Map.Entry<String, String> entry : urlSet.entrySet()) {
+            for (Map.Entry<String, String> secondLoopEntry : urlSet.entrySet()) {
+                String wikipediaPageContent = this.wikipedia.fetch(entry.getValue());
+
+                if (!Objects.equals(entry.getKey(), secondLoopEntry.getKey())) {
+                    if (wikipediaPageContent.contains(secondLoopEntry.getKey())) {
+                        found = true;
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        return found ? 1.0 : 0.0;
     }
 
     /**
@@ -85,33 +96,16 @@ public class FactCheckerService {
         // fact check all sentences and get result as model
         List<String> model = new ArrayList<>();
 
-        for (Sentence curSent : sentences) {
-
+        for (Sentence sentence : sentences) {
             // process input text
-            inputProcessor.processTextInput(curSent);
-            Map<String, String> res = inputProcessor.getWikipediaURLSAsSet(curSent.getSentenceText());
+            this.inputProcessor.processTextInput(sentence);
+            Map<String, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(sentence.getSentenceText());
+
             // classic way, loop a Map
-            boolean found = false;
-            for (Map.Entry<String, String> entry : res.entrySet()) {
-                for (Map.Entry<String, String> secondLoopEntry : res.entrySet()) {
-                    String wikipediaPageContent = request.fetch(entry.getValue());
-                    if(!Objects.equals(entry.getKey(), secondLoopEntry.getKey())){
-                        if(wikipediaPageContent.contains(secondLoopEntry.getKey()))
-                            found = true;
-                    }
+            double score = this.searchForFact(urlSet);
+            sentence.setScore(score);
 
-                }
-            }
-            if(found)
-                curSent.setScore(1.0);
-            else
-                curSent.setScore(0.0);
-            // TODO assign score
-            // TODO if only one wikipedia page was found, ie the api wasn't able
-            // to identify all of the present entities, maybe search for the
-            // unidentified text
-
-            model.add(curSent.getFactID()+" "+curSent.getSentenceText()+ " "+ curSent.getScore());
+            model.add(sentence.getFactID() + " " + sentence.getSentenceText() + " " + sentence.getScore());
         }
 
         return model;

@@ -1,8 +1,7 @@
 package org.dice.alk.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
+import com.googlecode.concurrenttrees.solver.LCSubstringSolver;
 import org.dice.alk.model.Sentence;
 import org.dice.alk.model.TagMeResult;
 import org.dice.alk.model.TagMeSpot;
@@ -10,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
-import com.googlecode.concurrenttrees.solver.LCSubstringSolver;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is responsible for parsing and processing the input string.
@@ -169,19 +168,6 @@ public class InputProcessorService {
 		//TODO synonyms
 		
 		return getPredicate(input, relevantItems);
-	}
-
-	/**
-	 * Retrieves all found wikipedia paths.
-	 * 
-	 * @deprecated Might not be useful in our scenario anymore, but keeping it for
-	 *             testing purposes.
-	 * @param input
-	 * @return
-	 */
-	public List<String> getAllWikipediaPaths(String input) {
-		TagMeResult result = this.tagMeService.tag(input);
-		return getWikipediaURLS(result.getAnnotations());
 	}
 
 	/**

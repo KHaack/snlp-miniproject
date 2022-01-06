@@ -2,6 +2,7 @@ package org.dice.alk.service;
 
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import com.googlecode.concurrenttrees.solver.LCSubstringSolver;
+import org.dice.alk.exception.InputProcessorException;
 import org.dice.alk.model.Sentence;
 import org.dice.alk.model.TagMeResult;
 import org.dice.alk.model.TagMeSpot;
@@ -49,15 +50,14 @@ public class InputProcessorService {
 	 */
 	public void processTextInput(Sentence sentence) {
 		// preprocess input, remove all unnecessary stuff
-		String input = preprocessInput(sentence.getSentenceText());
-		System.out.println(input);
+		String input = this.cleanSentence(sentence.getSentenceText());
 
 		// get result from API and parse it
 		TagMeResult result = this.tagMeService.tag(input);
 
 		// signal this sentence as false
 		if (result.getAnnotations().size() < 2) {
-			return;
+			throw new InputProcessorException("not 2 entities found.");
 		}
 
 		// sort multiple entities problem
@@ -85,16 +85,15 @@ public class InputProcessorService {
 
 	/**
 	 * FIXME better ways of doing this
-	 * 
+	 *
 	 * @param input
 	 * @return
 	 */
-	public String preprocessInput(String input) {
-		String text = new String(input);
+	public String cleanSentence(String input) {
 		for (String bl : UNWANTED) {
-			text = text.replaceAll(bl, " ");
+			input = input.replaceAll(bl, " ");
 		}
-		return text;
+		return input;
 	}
 
 	/**
@@ -193,6 +192,7 @@ public class InputProcessorService {
 	public Map<String, String> getWikipediaURLSAsSet(String input) {
 		List<TagMeSpot> relevantItems = this.tagMeService.tag(input).getAnnotations();
 		Map<String, String> wikipediaPaths = new HashMap<>();
+
 		for (TagMeSpot spot : relevantItems) {
 			wikipediaPaths.put(spot.getSpot(), wikipediaEndpoint + spot.getTitle());
 		}

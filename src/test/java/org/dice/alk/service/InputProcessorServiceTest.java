@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -19,9 +20,18 @@ public class InputProcessorServiceTest {
     @Autowired
     private InputProcessorService service;
 
+    @Test
+    public void cleanSentenceTest() {
+        String text = "Marvin Williams's team is Charlotte Hornets";
+        String result = this.service.cleanSentence(text);
+        String expected = "Marvin Williams team Charlotte Hornets";
+
+        assertEquals(expected, result);
+    }
+
 
     @Test
-    public void testAnnotator() {
+    public void annotatorTest() {
         // TODO just use parameterized runs
         String text = "Marvin Williams's team is Charlotte Hornets";
         Sentence sentence = new Sentence(0, text);

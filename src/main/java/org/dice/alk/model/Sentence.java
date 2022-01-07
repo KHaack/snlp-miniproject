@@ -2,8 +2,10 @@ package org.dice.alk.model;
 
 import org.apache.jena.rdf.model.*;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Holds the sentence identification elements
@@ -33,7 +35,7 @@ public class Sentence {
 	/**
 	 * The relations in this sentence.
 	 */
-	private List<String> relations = new LinkedList<>();
+	private Set<String> relations = new HashSet<>();
 
 	/**
 	 * The sentence's relation
@@ -130,11 +132,11 @@ public class Sentence {
 		this.predicate = predicate;
 	}
 
-	public List<String> getRelations() {
+	public Set<String> getRelations() {
 		return relations;
 	}
 
-	public void setRelations(List<String> relations) {
+	public void setRelations(Set<String> relations) {
 		this.relations = relations;
 	}
 }

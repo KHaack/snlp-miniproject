@@ -43,12 +43,11 @@ public class StanfordExtractorService {
         List<Sentence> sentences = new LinkedList<>();
         for (CoreSentence s : document.sentences()) {
             Sentence sentence = new Sentence(s.text());
-            sentences.add(sentence);
 
             // relation
             if (s.coreMap().containsKey(MachineReadingAnnotations.RelationMentionsAnnotation.class)) {
                 for (RelationMention relation : s.coreMap().get(MachineReadingAnnotations.RelationMentionsAnnotation.class)) {
-                    if (!relation.isNegativeRelation()) {
+                    if (null != relation.getType() && !relation.getType().equals("_NR")) {
                         sentence.getRelations().add(relation.getType());
                     }
                 }
@@ -61,6 +60,8 @@ public class StanfordExtractorService {
                 entity.setWikipediaTitle(mention.entity());
                 sentence.getEntities().add(entity);
             }
+
+            sentences.add(sentence);
         }
 
         return sentences;

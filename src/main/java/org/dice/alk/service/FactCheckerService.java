@@ -89,8 +89,10 @@ public class FactCheckerService {
      * @return
      */
     public double factCheck(Sentence toCheck, Integer maxSentences, Integer maxTextLength, Integer minimumEntityHits) {
+        LOGGER.info("fact check for: " + toCheck.getSentenceText());
+
         Map<Entity, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(toCheck);
-        List<Sentence> foundSentences = new LinkedList<>();
+        List<Sentence> possibleSentences = new LinkedList<>();
 
         for (Entity entity : toCheck.getEntities()) {
             LOGGER.info("search for entity: " + entity.getWikipediaTitle());
@@ -132,16 +134,40 @@ public class FactCheckerService {
 
                 if (foundEntities >= Math.max(minimumEntityHits, toCheck.getEntities().size() - 1)) {
                     LOGGER.info("\tpossible!");
-                    foundSentences.add(sentence);
+                    possibleSentences.add(sentence);
                 }
                 LOGGER.info("----------------------------");
             }
-
-            // 5. check possible sentences relation
-            // 5.1 get synonyms
         }
 
-        return foundSentences.size() > 0 ? 1.0 : 0.0;
+        return possibleSentences.size() > 0
+                ? this.checkRelation(toCheck, possibleSentences)
+                : 0.0;
+    }
+
+    /**
+     * Check the relations.
+     *
+     * @param toCheck
+     * @param possibleSentences
+     * @return
+     */
+    private double checkRelation(Sentence toCheck, List<Sentence> possibleSentences) {
+        LOGGER.info("check relation");
+        if (toCheck.getRelations().size() == 0) {
+            LOGGER.info("\tno relation to check => true");
+            return 1.0;
+        }
+
+        for (String relation : toCheck.getRelations()) {
+            for (Sentence sentence : possibleSentences) {
+                if (sentence.getRelations().contains(relation)) {
+                    return 1.0;
+                }
+            }
+        }
+
+        return 0.0;
     }
 
 }

@@ -1,5 +1,7 @@
 package org.dice.alk.service;
 
+import edu.stanford.nlp.ie.machinereading.structure.MachineReadingAnnotations;
+import edu.stanford.nlp.ie.machinereading.structure.RelationMention;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.CoreSentence;
@@ -17,7 +19,8 @@ public class StanfordExtractorService {
     //
     // tipple: tokenize,ssplit,pos,lemma,depparse,natlog,openie
     // coreference: tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink
-    private static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink";
+    // relation: relation
+    private static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink,relation";
 
     /**
      * Extract the sentences from the passed text.
@@ -41,6 +44,15 @@ public class StanfordExtractorService {
         for (CoreSentence s : document.sentences()) {
             Sentence sentence = new Sentence(s.text());
             sentences.add(sentence);
+
+            // relation
+            if (s.coreMap().containsKey(MachineReadingAnnotations.RelationMentionsAnnotation.class)) {
+                for (RelationMention relation : s.coreMap().get(MachineReadingAnnotations.RelationMentionsAnnotation.class)) {
+                    if (!relation.isNegativeRelation()) {
+                        sentence.getRelations().add(relation.getType());
+                    }
+                }
+            }
 
             // mentions
             for (CoreEntityMention mention : s.entityMentions()) {

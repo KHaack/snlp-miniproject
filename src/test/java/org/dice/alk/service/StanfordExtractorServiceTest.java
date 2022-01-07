@@ -77,4 +77,18 @@ public class StanfordExtractorServiceTest {
         assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Norfolk"))));
     }
 
+    @Test
+    public void relation1Test() {
+        String text = "Joe Smith is from Seattle";
+        List<Sentence> result = this.service.extract(text);
+
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Joe Smith"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
+
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Seattle"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Seattle"))));
+
+        assertThat(result.get(0).getRelations(), hasItem(equalTo("Located_In")));
+    }
+
 }

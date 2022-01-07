@@ -31,6 +31,11 @@ public class Sentence {
 	private List<Entity> entities = new LinkedList<>();
 
 	/**
+	 * The relations in this sentence.
+	 */
+	private List<String> relations = new LinkedList<>();
+
+	/**
 	 * The sentence's relation
 	 */
 	private String predicate;
@@ -125,4 +130,11 @@ public class Sentence {
 		this.predicate = predicate;
 	}
 
+	public List<String> getRelations() {
+		return relations;
+	}
+
+	public void setRelations(List<String> relations) {
+		this.relations = relations;
+	}
 }

@@ -76,6 +76,19 @@ public class FactCheckerService {
      * @return
      */
     public double factCheck(Sentence toCheck) {
+        return factCheck(toCheck, null, null, null);
+    }
+
+    /**
+     * Search for facts.
+     *
+     * @param toCheck           The sentence to check.
+     * @param maxSentences      Number of maximum wikipedia sentences to check
+     * @param maxTextLength     Maximum wikipadia text length to check.
+     * @param minimumEntityHits Minimum entities that should be in a possible sentence
+     * @return
+     */
+    public double factCheck(Sentence toCheck, Integer maxSentences, Integer maxTextLength, Integer minimumEntityHits) {
         Map<Entity, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(toCheck);
         List<Sentence> foundSentences = new LinkedList<>();
 
@@ -90,11 +103,19 @@ public class FactCheckerService {
             // 2. entityLinking
             // 3. ner
             String wikipediaContent = this.wikipedia.fetch(entry.getValue());
-            wikipediaContent = wikipediaContent.substring(0, 3000);
+            if (null != maxTextLength) {
+                wikipediaContent = wikipediaContent.substring(0, Math.min(maxTextLength, wikipediaContent.length()));
+            }
+
             List<Sentence> sentences = this.stanfordExtractorService.extract(wikipediaContent);
 
             // 4. check entity exists
-            int end = Math.min(10, sentences.size());
+            int end = sentences.size();
+
+            if (null != maxSentences) {
+                end = Math.min(maxSentences, sentences.size());
+            }
+
             for (int i = 0; i < end; i++) {
                 int foundEntities = 0;
                 Sentence sentence = sentences.get(i);
@@ -109,10 +130,7 @@ public class FactCheckerService {
                     }
                 }
 
-                if (foundEntities >= toCheck.getEntities().size() - 1) {
-                    for (Entity entity : sentence.getEntities()) {
-                        LOGGER.info("\t" + entity.getText() + " " + entity.getWikipediaTitle());
-                    }
+                if (foundEntities >= Math.max(minimumEntityHits, toCheck.getEntities().size() - 1)) {
                     LOGGER.info("\tpossible!");
                     foundSentences.add(sentence);
                 }

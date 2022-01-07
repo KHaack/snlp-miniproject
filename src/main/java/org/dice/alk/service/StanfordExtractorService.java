@@ -22,7 +22,7 @@ public class StanfordExtractorService {
     /**
      * Extract the sentences from the passed text.
      *
-     * @param text
+     * @param text The text to parse.
      * @return
      */
     public List<Sentence> extract(String text) {

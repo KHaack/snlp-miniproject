@@ -25,14 +25,36 @@ public class FactCheckerServiceTest {
     private FactCheckerService factCheck;
 
     @Test
-    public void testFactChecker() {
+    public void factChecker1() {
         String text = "Joe Smith is from Norfolk, Virginia.";
         List<Sentence> sentences = this.stanfordExtractorService.extract(text);
 
         assertEquals(1, sentences.size());
-        double score = this.factCheck.factCheck(sentences.get(0));
+        double score = this.factCheck.factCheck(sentences.get(0), 10, 1500, sentences.get(0).getEntities().size() - 1);
 
         assertThat(score, closeTo(1.0, 0.5));
+    }
+
+    @Test
+    public void factChecker2() {
+        String text = "John Peel's birth place is Heswall.";
+        List<Sentence> sentences = this.stanfordExtractorService.extract(text);
+
+        assertEquals(1, sentences.size());
+        double score = this.factCheck.factCheck(sentences.get(0), 10, 1500, sentences.get(0).getEntities().size() - 1);
+
+        assertThat(score, closeTo(1.0, 0.5));
+    }
+
+    @Test
+    public void factChecker3() {
+        String text = "Dr. Dre's birth place is The Hague.";
+        List<Sentence> sentences = this.stanfordExtractorService.extract(text);
+
+        assertEquals(1, sentences.size());
+        double score = this.factCheck.factCheck(sentences.get(0), 10, 1500, sentences.get(0).getEntities().size() - 1);
+
+        assertThat(score, closeTo(0.0, 0.5));
     }
 
 }

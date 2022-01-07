@@ -1,8 +1,6 @@
 package org.dice.alk.service;
 
-import edu.stanford.nlp.ie.util.RelationTriple;
-import org.hamcrest.FeatureMatcher;
-import org.hamcrest.Matcher;
+import org.dice.alk.model.Sentence;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,47 +22,59 @@ public class StanfordExtractorServiceTest {
     private StanfordExtractorService service;
 
     @Test
-    public void extractTest() {
-        String text = "Claude Auchinleck's death place is Marrakesh.";
-        List<RelationTriple> result = this.service.extract(text);
+    public void ner1Test() {
+        String text = "Joe Smith is from Seattle.";
+        List<Sentence> result = this.service.extract(text);
 
-        assertThat(result, hasItem(allOf(
-                subject(equalTo("Claude Auchinleck")),
-                relation(equalTo("have")),
-                object(equalTo("death place"))
-        )));
-
-        assertThat(result, hasItem(allOf(
-                subject(equalTo("Claude Auchinleck 's death place")),
-                relation(equalTo("be")),
-                object(equalTo("Marrakesh"))
-        )));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Joe Smith"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Seattle"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Seattle"))));
     }
 
-    private FeatureMatcher<RelationTriple, String> relation(Matcher<String> matcher) {
-        return new FeatureMatcher<RelationTriple, String>(matcher, "relation", "relation") {
-            @Override
-            protected String featureValueOf(RelationTriple actual) {
-                return actual.relationLemmaGloss();
-            }
-        };
+    @Test
+    public void corefTest() {
+        String text = "Joe Smith is from Seattle. He was named to the All-Rookie Team.";
+        List<Sentence> result = this.service.extract(text);
+
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Joe Smith"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Seattle"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Seattle"))));
+
+        assertThat(result.get(1).getEntities(), hasItem(hasProperty("text", equalTo("He"))));
+        assertThat(result.get(1).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
+        assertThat(result.get(1).getEntities(), hasItem(hasProperty("text", equalTo("All-Rookie Team"))));
+        assertThat(result.get(1).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("NBA_All-Rookie_Team"))));
     }
 
-    private FeatureMatcher<RelationTriple, String> object(Matcher<String> matcher) {
-        return new FeatureMatcher<RelationTriple, String>(matcher, "object", "object") {
-            @Override
-            protected String featureValueOf(RelationTriple actual) {
-                return actual.objectLemmaGloss();
-            }
-        };
+    @Test
+    public void extractSentence1Test() {
+        String text = "Jamie Yeo was born in 1990. His death place is Princeton, New Jersey.";
+        List<Sentence> result = this.service.extract(text);
+
+        assertThat(result, hasItem(hasProperty("sentenceText", equalTo("Jamie Yeo was born in 1990."))));
+        assertThat(result, hasItem(hasProperty("sentenceText", equalTo("His death place is Princeton, New Jersey."))));
     }
 
-    private FeatureMatcher<RelationTriple, String> subject(Matcher<String> matcher) {
-        return new FeatureMatcher<RelationTriple, String>(matcher, "subject", "subject") {
-            @Override
-            protected String featureValueOf(RelationTriple actual) {
-                return actual.subjectLemmaGloss();
-            }
-        };
+    @Test
+    public void extractSentence2Test() {
+        String text = "The film stars John Cusack, Amanda Peet, Chiwetel Ejiofor, Oliver Platt, Thandiwe Newton, Danny Glover, and Woody Harrelson.";
+        List<Sentence> result = this.service.extract(text);
+
+        assertThat(result, hasItem(hasProperty("sentenceText", equalTo("The film stars John Cusack, Amanda Peet, Chiwetel Ejiofor, Oliver Platt, Thandiwe Newton, Danny Glover, and Woody Harrelson."))));
     }
+
+    @Test
+    public void extractSentence3Test() {
+        String text = "Born and raised in Norfolk, Joe Smith was the College Player of the Year at Maryland";
+        List<Sentence> result = this.service.extract(text);
+
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Joe Smith"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
+
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Norfolk"))));
+        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Norfolk"))));
+    }
+
 }

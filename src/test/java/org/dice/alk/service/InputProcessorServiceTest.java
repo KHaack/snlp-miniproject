@@ -18,12 +18,12 @@ public class InputProcessorServiceTest {
 
     private final static String WIKIPEDIA_EP = "https://en.wikipedia.org/wiki/";
     @Autowired
-    private InputProcessorService service;
+    private InputProcessorService inputProcessorService;
 
     @Test
     public void cleanSentenceTest() {
         String text = "Marvin Williams's team is Charlotte Hornets";
-        String result = this.service.cleanSentence(text);
+        String result = this.inputProcessorService.cleanSentence(text);
         String expected = "Marvin Williams team Charlotte Hornets";
 
         assertEquals(expected, result);
@@ -36,7 +36,7 @@ public class InputProcessorServiceTest {
         String text = "Marvin Williams's team is Charlotte Hornets";
         Sentence sentence = new Sentence(0, text);
 
-        this.service.fillSentence(sentence);
+        this.inputProcessorService.getPredicate(sentence);
         String pred = sentence.getPredicate();
 
         assertThat(pred, is("team"));

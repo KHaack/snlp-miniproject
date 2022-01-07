@@ -1,12 +1,9 @@
 package org.dice.alk.model;
 
-import java.util.List;
+import org.apache.jena.rdf.model.*;
 
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Holds the sentence identification elements
@@ -18,7 +15,7 @@ public class Sentence {
 	/**
 	 * Fact ID
 	 */
-	private int factID;
+	private Integer factID;
 	/**
 	 * The sentence text
 	 */
@@ -31,7 +28,7 @@ public class Sentence {
 	/**
 	 * The sentence's entities
 	 */
-	private List<TagMeSpot> entities;
+	private List<Entity> entities = new LinkedList<>();
 
 	/**
 	 * The sentence's relation
@@ -39,14 +36,23 @@ public class Sentence {
 	private String predicate;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @param factID       The fact ID.
 	 * @param sentenceText The sentence text.
 	 */
-	public Sentence(int factID, String sentenceText) {
+	public Sentence(Integer factID, String sentenceText) {
 		this.factID = factID;
 		this.sentenceText = sentenceText;
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param sentenceText The sentence text.
+	 */
+	public Sentence(String sentenceText) {
+		this(null, sentenceText);
 	}
 
 	/**
@@ -77,7 +83,15 @@ public class Sentence {
 		return ResourceFactory.createStatement(subject, TRUTH_VALUE, object);
 	}
 
-	// getters and setters
+	/**
+	 * Indicates whether the passed entity is inside the sentence or not.
+	 *
+	 * @param entity The entity to check.
+	 * @return
+	 */
+	public boolean entityExists(Entity entity) {
+		return this.entities.contains(entity);
+	}
 
 	public int getFactID() {
 		return factID;
@@ -95,11 +109,11 @@ public class Sentence {
 		this.score = score;
 	}
 
-	public List<TagMeSpot> getEntities() {
+	public List<Entity> getEntities() {
 		return entities;
 	}
 
-	public void setEntities(List<TagMeSpot> entities) {
+	public void setEntities(List<Entity> entities) {
 		this.entities = entities;
 	}
 

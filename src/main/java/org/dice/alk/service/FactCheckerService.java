@@ -137,9 +137,8 @@ public class FactCheckerService {
                 LOGGER.info("----------------------------");
             }
 
-
-            // 5. get synonyms
-            // 6. check possible sentences relation
+            // 5. check possible sentences relation
+            // 5.1 get synonyms
         }
 
         return foundSentences.size() > 0 ? 1.0 : 0.0;

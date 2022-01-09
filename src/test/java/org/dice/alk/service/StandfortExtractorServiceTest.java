@@ -33,22 +33,6 @@ public class StandfortExtractorServiceTest {
     }
 
     @Test
-    public void corefTest() {
-        String text = "Joe Smith is from Seattle. He was named to the All-Rookie Team.";
-        List<Sentence> result = this.service.extract(text);
-
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Joe Smith"))));
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Seattle"))));
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Seattle"))));
-
-        assertThat(result.get(1).getEntities(), hasItem(hasProperty("text", equalTo("He"))));
-        assertThat(result.get(1).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
-        assertThat(result.get(1).getEntities(), hasItem(hasProperty("text", equalTo("All-Rookie Team"))));
-        assertThat(result.get(1).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("NBA_All-Rookie_Team"))));
-    }
-
-    @Test
     public void extractSentence1Test() {
         String text = "Jamie Yeo was born in 1990. His death place is Princeton, New Jersey.";
         List<Sentence> result = this.service.extract(text);
@@ -75,19 +59,5 @@ public class StandfortExtractorServiceTest {
 
         assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Norfolk"))));
         assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Norfolk"))));
-    }
-
-    @Test
-    public void relation1Test() {
-        String text = "Joe Smith is from Seattle";
-        List<Sentence> result = this.service.extract(text);
-
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Joe Smith"))));
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Joe_Smith_(basketball)"))));
-
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("text", equalTo("Seattle"))));
-        assertThat(result.get(0).getEntities(), hasItem(hasProperty("wikipediaTitle", equalTo("Seattle"))));
-
-        assertThat(result.get(0).getRelations(), hasItem(equalTo("Located_In")));
     }
 }

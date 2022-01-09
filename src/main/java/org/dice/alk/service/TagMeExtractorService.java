@@ -24,6 +24,7 @@ public class TagMeExtractorService {
     private static final String PARAMETER_LANG = "lang";
     private static final String PARAMETER_API_KEY = "gcube-token";
     private static final String PARAMETER_TEXT = "text";
+
     /**
      * The logger.
      */
@@ -71,11 +72,15 @@ public class TagMeExtractorService {
 
             TagMeResult result = this.restTemplate.getForObject(builder.build(), TagMeResult.class);
 
+            HashSet<TagMeSpot> filtered = new HashSet<>();
             for (TagMeSpot spot : result.getAnnotations()) {
                 if (null != spot.getTitle()) {
                     spot.setTitle(spot.getTitle().replace(' ', '_'));
+                    filtered.add(spot);
                 }
             }
+
+            result.setAnnotations(filtered);
             return result;
         } catch (Exception ex) {
             throw new TagMeException("unable to get response from " + builder, ex);

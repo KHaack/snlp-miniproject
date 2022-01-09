@@ -1,7 +1,7 @@
 package org.dice.alk.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TagMeResult {
     private Integer time;
@@ -9,7 +9,7 @@ public class TagMeResult {
     private String lang;
     private String timestamp;
     private String test;
-    private List<TagMeSpot> annotations = new ArrayList<>();
+    private Set<TagMeSpot> annotations = new HashSet<>();
 
     public Integer getTime() {
         return time;
@@ -51,11 +51,11 @@ public class TagMeResult {
         this.test = test;
     }
 
-    public List<TagMeSpot> getAnnotations() {
+    public Set<TagMeSpot> getAnnotations() {
         return annotations;
     }
 
-    public void setAnnotations(List<TagMeSpot> annotations) {
+    public void setAnnotations(Set<TagMeSpot> annotations) {
         this.annotations = annotations;
     }
 }

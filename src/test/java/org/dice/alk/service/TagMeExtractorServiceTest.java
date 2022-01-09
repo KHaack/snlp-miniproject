@@ -54,4 +54,15 @@ public class TagMeExtractorServiceTest {
         assertThat(result.getAnnotations(), hasItem(hasProperty("spot", containsString("Frank Herbert"))));
         assertThat(result.getAnnotations(), hasItem(hasProperty("title", equalTo("Frank_Herbert"))));
     }
+
+    @Test
+    public void tagme4Test() {
+        String text = "Born and raised in Norfolk, Virginia, Smith was the College Player of the Year at Maryland in 1995";
+        TagMeResult result = this.tagMeExtractorService.extract(text);
+
+        assertThat(result.getAnnotations(), hasItem(hasProperty("spot", containsString("Norfolk"))));
+        assertThat(result.getAnnotations(), hasItem(hasProperty("title", equalTo("Norfolk,_Virginia"))));
+    }
+
+
 }

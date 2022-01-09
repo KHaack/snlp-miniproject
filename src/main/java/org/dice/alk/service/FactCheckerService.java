@@ -6,17 +6,21 @@ import org.apache.jena.rdf.model.Statement;
 import org.dice.alk.io.IOUtils;
 import org.dice.alk.model.Entity;
 import org.dice.alk.model.Sentence;
+import org.dice.alk.model.WikipediaDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Service
 public class FactCheckerService {
+
+    private final static int MAX_PARAGRAPH_DEPTH = 6;
 
     /**
      * The logger.
@@ -24,7 +28,7 @@ public class FactCheckerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FactCheckerService.class);
 
     @Autowired
-    private InputProcessorService inputProcessor;
+    private NerService nerService;
 
     @Autowired
     private StandfortExtractorService stanfordExtractorService;
@@ -35,18 +39,18 @@ public class FactCheckerService {
     /**
      * Reads from file, fact checks and writes results to output file
      *
-     * @param inputFile  Input filepath.
-     * @param outputFile Output filepath.
+     * @param input  input.
+     * @param output Output filepath.
      */
-    public void factCheck(String inputFile, String outputFile) {
+    public void factCheck(InputStreamReader input, OutputStreamWriter output) {
         // read sentences from given file
-        Set<Sentence> sentences = IOUtils.readFromFile(inputFile);
+        Set<Sentence> sentences = IOUtils.readFromFile(input);
 
         // fact check all sentences and get result as model
         Model model = this.factCheck(sentences);
 
         // write results to file
-        IOUtils.writeResultsToFile(model, outputFile);
+        IOUtils.writeResultsToFile(model, output);
     }
 
     /**
@@ -64,7 +68,9 @@ public class FactCheckerService {
 
             sentence.setEntities(extraction.get(0).getEntities());
             sentence.setRelations(extraction.get(0).getRelations());
-            sentence.setScore(this.factCheck(sentence, 10, 1500, sentence.getEntities().size() - 1));
+            sentence.setScore(this.factCheck(sentence));
+
+            LOGGER.info("{} => {}", sentence.getScore(), sentence.getSentenceText());
 
             Statement statement = sentence.getStatementFromSentence();
             model.add(statement);
@@ -80,69 +86,63 @@ public class FactCheckerService {
     }
 
     /**
+     * FactCheck for the passed paragraph.
+     *
+     * @param toCheck
+     * @param document
+     * @param paragraph
+     * @return
+     */
+    private Double factCheckParagraph(Sentence toCheck, WikipediaDocument document, String paragraph) {
+        List<Sentence> sentences = this.nerService.extractParagraph(paragraph);
+
+        // 4. check entity exists
+        for (int i = 0; i < sentences.size(); i++) {
+            int foundEntities = 0;
+            Sentence sentence = sentences.get(i);
+
+            for (Entity entity : toCheck.getEntities()) {
+                // skip entity from wikipedia article
+                if (!entity.equals(document.getEntity())) {
+                    if (sentence.entityExists(entity)) {
+                        foundEntities++;
+                    }
+                }
+            }
+
+            if (foundEntities >= 1) {
+                LOGGER.info("possible: " + sentence.getSentenceText());
+                return 1.0;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Search for facts.
      *
      * @param toCheck The sentence to check.
      * @return
      */
     public double factCheck(Sentence toCheck) {
-        return factCheck(toCheck, null, null, null);
-    }
-
-    /**
-     * Search for facts.
-     *
-     * @param toCheck           The sentence to check.
-     * @param maxSentences      Number of maximum wikipedia sentences to check
-     * @param maxTextLength     Maximum wikipadia text length to check.
-     * @param minimumEntityHits Minimum entities that should be in a possible sentence
-     * @return
-     */
-    public double factCheck(Sentence toCheck, Integer maxSentences, Integer maxTextLength, Integer minimumEntityHits) {
         LOGGER.info("fact check for: " + toCheck.getSentenceText());
 
-        Map<Entity, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(toCheck);
-
-        for (Entity entity : toCheck.getEntities()) {
-            LOGGER.info("search for entity: " + entity.getWikipediaTitle());
+        // to checkable with only one entity
+        if (toCheck.getEntities().size() < 2) {
+            return 0.5;
         }
 
-        for (Map.Entry<Entity, String> entry : urlSet.entrySet()) {
-            LOGGER.info("check wikipedia for: " + entry.getKey().getWikipediaTitle());
+        for (Entity entity : toCheck.getEntities()) {
+            LOGGER.info("check wikipedia for: " + entity.getWikipediaTitle());
+            WikipediaDocument document = this.wikipedia.fetch(entity);
 
-            // 1. split into sentences
-            // 2. entityLinking
-            // 3. ner
-            String wikipediaContent = this.wikipedia.fetch(entry.getValue());
-            if (null != maxTextLength) {
-                wikipediaContent = wikipediaContent.substring(0, Math.min(maxTextLength, wikipediaContent.length()));
-            }
+            for (int i = 0; i < Math.min(document.getParagraphs().size(), MAX_PARAGRAPH_DEPTH); i++) {
+                String paragraph = document.getParagraphs().get(i);
+                Double result = this.factCheckParagraph(toCheck, document, paragraph);
 
-            List<Sentence> sentences = this.stanfordExtractorService.extract(wikipediaContent);
-
-            // 4. check entity exists
-            int end = sentences.size();
-
-            if (null != maxSentences) {
-                end = Math.min(maxSentences, sentences.size());
-            }
-
-            for (int i = 0; i < end; i++) {
-                int foundEntities = 0;
-                Sentence sentence = sentences.get(i);
-
-                for (Entity entity : toCheck.getEntities()) {
-                    // skip entity from wikipedia article
-                    if (!entity.equals(entry.getKey())) {
-                        if (sentence.entityExists(entity)) {
-                            foundEntities++;
-                        }
-                    }
-                }
-
-                if (foundEntities >= Math.max(minimumEntityHits, toCheck.getEntities().size() - 1)) {
-                    LOGGER.info("possible: " + sentence.getSentenceText());
-                    this.checkRelation(toCheck, sentence);
+                if (null != result) {
+                    return result;
                 }
             }
         }

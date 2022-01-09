@@ -1,5 +1,8 @@
 package org.dice.alk.service;
 
+import org.dice.alk.exception.WikipediaException;
+import org.dice.alk.model.Entity;
+import org.dice.alk.model.WikipediaDocument;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,8 +24,12 @@ public class WikipediaService {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(WikipediaService.class);
 
+    @Value("${wikipedia.endpoint}")
+    private String wikipediaEndpoint;
+
     @Value("${wikipedia.timeout}")
     private int timeout;
+
 
     private Document getDocument(String url) throws IOException {
         LOGGER.info("fetch wikipedia document from " + url);
@@ -32,23 +39,22 @@ public class WikipediaService {
     /**
      * Get the text content of a wikipedia page
      *
-     * @param url
+     * @param entity
      * @return
      */
-    public String fetch(String url) {
-        StringBuilder content = new StringBuilder();
+    public WikipediaDocument fetch(Entity entity) {
         try {
-            Document document = getDocument(url);
+            Document document = getDocument(this.wikipediaEndpoint + entity.getWikipediaTitle());
             Elements elements = document.select("#bodyContent .mw-parser-output p");
-            for (Element element:
-                    elements) {
-                content.append(element.text());
-            }
-        } catch (IOException | Error e) {
-            e.printStackTrace();
-        }
 
-        return content.toString();
+            WikipediaDocument wiki = new WikipediaDocument(entity);
+            for (Element element : elements) {
+                wiki.getParagraphs().add(element.text());
+            }
+            return wiki;
+        } catch (Exception ex) {
+            throw new WikipediaException("unable to fetch from wikipedia.", ex);
+        }
     }
 
     /**

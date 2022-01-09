@@ -4,19 +4,13 @@ import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNod
 import com.googlecode.concurrenttrees.solver.LCSubstringSolver;
 import org.dice.alk.model.Entity;
 import org.dice.alk.model.Sentence;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 /**
  * This class is responsible for parsing and processing the input string.
  */
 @Service
 public class InputProcessorService {
-
-	@Value("${wikipedia.endpoint}")
-	private String wikipediaEndpoint;
 
 	private final String[] UNWANTED = { " is ", " the ", " a ", " an ", "'s ", "'", "\\s+" };
 	private final String[] UNWANTED_PRED = { "of ", "\\p{Punct}" };
@@ -89,36 +83,5 @@ public class InputProcessorService {
 		// get predicate by subtracting the identified entities
 		// 10 relations or so, maybe we can just search for them directly
 		sentence.setPredicate(input.trim());
-	}
-
-	/**
-	 * Returns the corresponding Wikipedia articles
-	 *
-	 * @param relevantItems
-	 * @return
-	 */
-	public List<String> getWikipediaURLS(List<Entity> relevantItems) {
-		List<String> wikipediaPaths = new ArrayList<>();
-		for (Entity spot : relevantItems) {
-			wikipediaPaths.add(wikipediaEndpoint + spot.getWikipediaTitle());
-		}
-		return wikipediaPaths;
-	}
-
-	/**
-	 * Returns for a given text it return a map containing the spot and the wikipedia of the spot
-	 *
-	 * @param sentence
-	 * @return
-	 */
-	public Map<Entity, String> getWikipediaURLSAsSet(Sentence sentence) {
-		Set<Entity> relevantItems = sentence.getEntities();
-		Map<Entity, String> wikipediaPaths = new HashMap<>();
-
-		for (Entity spot : relevantItems) {
-			wikipediaPaths.put(spot, wikipediaEndpoint + spot.getWikipediaTitle());
-		}
-
-		return wikipediaPaths;
 	}
 }

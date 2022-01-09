@@ -1,5 +1,7 @@
 package org.dice.alk.service;
 
+import org.dice.alk.model.Entity;
+import org.dice.alk.model.WikipediaDocument;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,8 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -22,8 +23,13 @@ public class WikipediaServiceTest {
 
     @Test
     public void festContentTest() {
-        String content = service.fetch("https://en.wikipedia.org/wiki/Elon_Musk");
-        assertThat(content, containsString("He is the founder, CEO and Chief Engineer at SpaceX;"));
+        Entity entity = new Entity();
+        entity.setWikipediaTitle("Elon_Musk");
+
+        WikipediaDocument document = service.fetch(entity);
+        assertThat(document.getParagraphs(), hasItem(containsString("Elon Reeve Musk FRS")));
+        assertThat(document.getParagraphs(), hasItem(containsString("In 2002, Musk founded SpaceX")));
+        assertThat(document.getParagraphs(), hasItem(containsString("Elon Reeve Musk was born on")));
     }
 
     @Test

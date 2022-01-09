@@ -26,7 +26,7 @@ public class NerServiceTest {
     public void extract1Test() {
         String text = "Metta World Peace's team is Los Angeles Lakers.";
 
-        Set<Entity> result = this.nerService.extract(text);
+        Set<Entity> result = this.nerService.extractSentence(text);
 
         assertThat(result, hasItem(hasProperty("text", containsString("Metta World Peace"))));
         assertThat(result, hasItem(hasProperty("wikipediaTitle", equalTo("Metta_World_Peace"))));
@@ -39,7 +39,7 @@ public class NerServiceTest {
     public void extract2Test() {
         String text = "IBM's subordinate is Rational Software.";
 
-        Set<Entity> result = this.nerService.extract(text);
+        Set<Entity> result = this.nerService.extractSentence(text);
 
         assertThat(result, hasItem(hasProperty("text", containsString("IBM"))));
         assertThat(result, hasItem(hasProperty("wikipediaTitle", equalTo("IBM"))));
@@ -52,7 +52,7 @@ public class NerServiceTest {
     public void extract3Test() {
         String text = "Frank Herbert is An Unusual Angle's author.";
 
-        Set<Entity> result = this.nerService.extract(text);
+        Set<Entity> result = this.nerService.extractSentence(text);
 
         assertThat(result, hasItem(hasProperty("text", equalTo("Frank Herbert"))));
         assertThat(result, hasItem(hasProperty("wikipediaTitle", equalTo("Frank_Herbert"))));

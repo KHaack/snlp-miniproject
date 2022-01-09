@@ -1,7 +1,5 @@
 package org.dice.alk.service;
 
-import edu.stanford.nlp.ie.machinereading.structure.MachineReadingAnnotations;
-import edu.stanford.nlp.ie.machinereading.structure.RelationMention;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.CoreSentence;
@@ -21,7 +19,7 @@ public class StandfortExtractorService {
     // tipple: tokenize,ssplit,pos,lemma,depparse,natlog,openie
     // coreference: tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink
     // relation: relation
-    private static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink,relation";
+    private static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,entitylink,dcoref";
 
     @Async
     public Future<Set<Entity>> extractAsync(String text) {
@@ -58,15 +56,6 @@ public class StandfortExtractorService {
         List<Sentence> sentences = new LinkedList<>();
         for (CoreSentence s : document.sentences()) {
             Sentence sentence = new Sentence(s.text());
-
-            // relation
-            if (s.coreMap().containsKey(MachineReadingAnnotations.RelationMentionsAnnotation.class)) {
-                for (RelationMention relation : s.coreMap().get(MachineReadingAnnotations.RelationMentionsAnnotation.class)) {
-                    if (null != relation.getType() && !relation.getType().equals("_NR")) {
-                        sentence.getRelations().add(relation.getType());
-                    }
-                }
-            }
 
             // mentions
             for (CoreEntityMention mention : s.entityMentions()) {

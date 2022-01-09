@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,20 +42,16 @@ public class AlkApiController {
         return true;
     }
 
-    @RequestMapping(value = "/fetchText", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String fetch() {
-        return service.fetch("https://en.wikipedia.org/wiki/Elon_Musk");
-    }
-
     @RequestMapping(value = "/fetchTable", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Map<String, String>  fetchTable() {
         return service.fetchTable("https://en.wikipedia.org/wiki/Elon_Musk");
     }
 
     @RequestMapping(value = "/testFactCheck", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<String> testFactCheck() {
+    public List<String> testFactCheck() throws FileNotFoundException {
         String inputFile = "./data/SNLP2020_training_test.tsv";
-        Set<Sentence> sentences = IOUtils.readFromFile(inputFile);
+        FileReader inputStreamReader = new FileReader(inputFile);
+        Set<Sentence> sentences = IOUtils.readFromFile(inputStreamReader);
 
         List<String> strings = new LinkedList<>();
         StmtIterator it = this.factCheckerService.factCheck(sentences).listStatements();

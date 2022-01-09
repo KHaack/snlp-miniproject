@@ -137,18 +137,10 @@ public class FactCheckerService {
             LOGGER.info("check wikipedia for: " + entity.getWikipediaTitle());
             WikipediaDocument document = this.wikipedia.fetch(entity);
 
-            // check infobox
-            String paragraph = document.getInfoBoxAsString();
-            Double result = this.factCheckParagraph(toCheck, document, paragraph);
-
-            if (null != result) {
-                return result;
-            }
-
             // check paragraphs
             for (int i = 0; i < Math.min(document.getParagraphs().size(), MAX_PARAGRAPH_DEPTH); i++) {
-                paragraph = document.getParagraphs().get(i);
-                result = this.factCheckParagraph(toCheck, document, paragraph);
+                String paragraph = document.getParagraphs().get(i);
+                Double result = this.factCheckParagraph(toCheck, document, paragraph);
 
                 if (null != result) {
                     return result;

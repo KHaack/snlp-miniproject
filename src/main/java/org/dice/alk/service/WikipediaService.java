@@ -64,6 +64,8 @@ public class WikipediaService {
                     wiki.getInfobox().put(th.text(), td.text());
                 }
             }
+
+            wiki.getParagraphs().add(0, wiki.getInfoBoxAsString());
             return wiki;
         } catch (Exception ex) {
             throw new WikipediaException("unable to fetch from wikipedia.", ex);

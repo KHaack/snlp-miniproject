@@ -141,32 +141,4 @@ public class Sentence {
 	public void setRelations(Set<String> relations) {
 		this.relations = relations;
 	}
-
-	/**
-	 * Prune the entities of this sentence.
-	 */
-	public void pruneEntities() {
-		/*
-		 * Removes entities contained in others.
-		 * The sentence 'Foo's birth place is Denison, Texas'  should result in 'Denison, Texas'
-		 * and should not contain 'Texas'.
-		 */
-		Set<Entity> pruneEntities = new HashSet<>();
-
-		for (Entity e1 : this.getEntities()) {
-			boolean contains = false;
-
-			for (Entity e2 : this.getEntities()) {
-				if (e1 != e2 && e2.getWikipediaTitle().contains(e1.getText())) {
-					contains = true;
-				}
-			}
-
-			if (!contains) {
-				pruneEntities.add(e1);
-			}
-		}
-
-		this.setEntities(pruneEntities);
-	}
 }

@@ -90,5 +90,4 @@ public class StandfortExtractorServiceTest {
 
         assertThat(result.get(0).getRelations(), hasItem(equalTo("Located_In")));
     }
-
 }

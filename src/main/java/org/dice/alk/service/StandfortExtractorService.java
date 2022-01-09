@@ -6,14 +6,14 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import org.dice.alk.exception.StandfortExtractorException;
 import org.dice.alk.model.Entity;
 import org.dice.alk.model.Sentence;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.Future;
 
 @Service
 public class StandfortExtractorService {
@@ -23,19 +23,18 @@ public class StandfortExtractorService {
     // relation: relation
     private static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink,relation";
 
-    public Sentence extract(Sentence sentence) {
-        List<Sentence> list = this.extract(sentence.getSentenceText());
+    @Async
+    public Future<Set<Entity>> extractAsync(String text) {
+        List<Sentence> sentences = this.extract(text);
 
-        if (list.size() > 1) {
-            throw new StandfortExtractorException("extracted multiple senteces.");
+        Set<Entity> entities = new HashSet<>();
+        for (Sentence sentence : sentences) {
+            for (Entity entity : sentence.getEntities()) {
+                entities.add(entity);
+            }
         }
 
-        sentence.setRelations(list.get(0).getRelations());
-        sentence.setEntities(list.get(0).getEntities());
-        sentence.setPredicate(list.get(0).getPredicate());
-        sentence.setFactID(list.get(0).getFactID());
-
-        return sentence;
+        return new AsyncResult<>(entities);
     }
 
     /**
@@ -79,7 +78,6 @@ public class StandfortExtractorService {
                 }
             }
 
-            sentence.pruneEntities();
             sentences.add(sentence);
         }
 

@@ -90,25 +90,29 @@ public class Sentence {
 		return ResourceFactory.createStatement(subject, TRUTH_VALUE, object);
 	}
 
-	/**
-	 * Indicates whether the passed entity is inside the sentence or not.
-	 *
-	 * @param entity The entity to check.
-	 * @return
-	 */
-	public boolean entityExists(Entity entity) {
-		return this.entities.contains(entity);
-	}
+    /**
+     * Indicates whether the passed entity is inside the sentence or not.
+     *
+     * @param entity The entity to check.
+     * @return
+     */
+    public boolean entityExists(Entity entity) {
+        return this.entities.contains(entity);
+    }
 
-	public int getFactID() {
-		return factID;
-	}
+    public void setFactID(Integer factID) {
+        this.factID = factID;
+    }
 
-	public String getSentenceText() {
-		return sentenceText;
-	}
+    public int getFactID() {
+        return factID;
+    }
 
-	public double getScore() {
+    public String getSentenceText() {
+        return sentenceText;
+    }
+
+    public double getScore() {
 		return score;
 	}
 

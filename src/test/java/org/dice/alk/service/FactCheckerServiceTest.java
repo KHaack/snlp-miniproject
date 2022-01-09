@@ -57,4 +57,11 @@ public class FactCheckerServiceTest {
         assertThat(score, closeTo(0.0, 0.5));
     }
 
+    @Test
+    public void xxx() {
+        String inputFile = "./data/SNLP2020_training_test.tsv";
+        String outputFile = "./data/SNLP2020_training_result.tsv";
+        this.factCheck.factCheck(inputFile, outputFile);
+    }
+
 }

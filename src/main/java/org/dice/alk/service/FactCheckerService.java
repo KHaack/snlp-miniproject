@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,11 +58,22 @@ public class FactCheckerService {
     public Model factCheck(Set<Sentence> sentences) {
         Model model = ModelFactory.createDefaultModel();
 
+        int i = 0;
         for (Sentence sentence : sentences) {
-            this.inputProcessor.getPredicate(sentence);
-            sentence.setScore(this.factCheck(sentence));
+            List<Sentence> extraction = this.stanfordExtractorService.extract(sentence.getSentenceText());
+
+            sentence.setEntities(extraction.get(0).getEntities());
+            sentence.setRelations(extraction.get(0).getRelations());
+            sentence.setScore(this.factCheck(sentence, 10, 1500, sentence.getEntities().size() - 1));
+
             Statement statement = sentence.getStatementFromSentence();
             model.add(statement);
+
+            i++;
+
+            if (i % 10 == 0) {
+                LOGGER.info("{}/{} ", i, sentences.size());
+            }
         }
 
         return model;
@@ -92,7 +102,6 @@ public class FactCheckerService {
         LOGGER.info("fact check for: " + toCheck.getSentenceText());
 
         Map<Entity, String> urlSet = this.inputProcessor.getWikipediaURLSAsSet(toCheck);
-        List<Sentence> possibleSentences = new LinkedList<>();
 
         for (Entity entity : toCheck.getEntities()) {
             LOGGER.info("search for entity: " + entity.getWikipediaTitle());
@@ -121,7 +130,6 @@ public class FactCheckerService {
             for (int i = 0; i < end; i++) {
                 int foundEntities = 0;
                 Sentence sentence = sentences.get(i);
-                LOGGER.info("sentence: " + sentence.getSentenceText());
 
                 for (Entity entity : toCheck.getEntities()) {
                     // skip entity from wikipedia article
@@ -133,26 +141,23 @@ public class FactCheckerService {
                 }
 
                 if (foundEntities >= Math.max(minimumEntityHits, toCheck.getEntities().size() - 1)) {
-                    LOGGER.info("\tpossible!");
-                    possibleSentences.add(sentence);
+                    LOGGER.info("possible: " + sentence.getSentenceText());
+                    this.checkRelation(toCheck, sentence);
                 }
-                LOGGER.info("----------------------------");
             }
         }
 
-        return possibleSentences.size() > 0
-                ? this.checkRelation(toCheck, possibleSentences)
-                : 0.0;
+        return 0.0;
     }
 
     /**
      * Check the relations.
      *
      * @param toCheck
-     * @param possibleSentences
+     * @param possibleSentence
      * @return
      */
-    private double checkRelation(Sentence toCheck, List<Sentence> possibleSentences) {
+    private double checkRelation(Sentence toCheck, Sentence possibleSentence) {
         LOGGER.info("check relation");
         if (toCheck.getRelations().size() == 0) {
             LOGGER.info("\tno relation to check => true");
@@ -160,10 +165,8 @@ public class FactCheckerService {
         }
 
         for (String relation : toCheck.getRelations()) {
-            for (Sentence sentence : possibleSentences) {
-                if (sentence.getRelations().contains(relation)) {
-                    return 1.0;
-                }
+            if (possibleSentence.getRelations().contains(relation)) {
+                return 1.0;
             }
         }
 

@@ -30,7 +30,7 @@ public class AlkController {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(AlkController.class);
 
-    private static final DecimalFormat df = new DecimalFormat("#.00");
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     ;
 
     @Autowired
@@ -69,7 +69,7 @@ public class AlkController {
                 builder.append(" ");
                 builder.append(sentence.getSentenceText());
 
-                LOGGER.info("{} {}", df.format(score), sentence.getSentenceText());
+                LOGGER.info("Score => {}", df.format(score));
 
                 count++;
 

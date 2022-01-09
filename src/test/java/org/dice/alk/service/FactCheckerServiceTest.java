@@ -27,8 +27,11 @@ public class FactCheckerServiceTest {
     @Autowired
     private FactCheckerService factCheck;
 
+    @Autowired
+    private RelationService relationService;
+
     @Test
-    public void factChecker1() {
+    public void factChecker1Test() {
         String text = "Joe Smith is from Norfolk, Virginia.";
         Set<Entity> entities = this.nerService.extractSentence(text);
         Sentence sentence = new Sentence(text);
@@ -40,7 +43,7 @@ public class FactCheckerServiceTest {
     }
 
     @Test
-    public void factChecker2() {
+    public void factChecker2Test() {
         String text = "John Peel's birth place is Heswall.";
         Set<Entity> entities = this.nerService.extractSentence(text);
         Sentence sentence = new Sentence(text);
@@ -52,7 +55,7 @@ public class FactCheckerServiceTest {
     }
 
     @Test
-    public void factChecker3() {
+    public void factChecker3Test() {
         String text = "Dr. Dre's birth place is The Hague.";
         Set<Entity> entities = this.nerService.extractSentence(text);
         Sentence sentence = new Sentence(text);
@@ -61,6 +64,18 @@ public class FactCheckerServiceTest {
         double score = this.factCheck.factCheck(sentence);
 
         assertThat(score, closeTo(0.0, 0.5));
+    }
+
+    @Test
+    public void infoBoxOnlyTest() {
+        String text = "Ai Sugiyama's birth place is Yokohama.";
+        Sentence sentence = new Sentence(text);
+        sentence.setEntities(this.nerService.extractSentence(sentence.getSentenceText()));
+        this.relationService.extractRelation(sentence);
+
+        double score = this.factCheck.factCheck(sentence);
+
+        assertThat(score, closeTo(1.0, 0.5));
     }
 
     @Test

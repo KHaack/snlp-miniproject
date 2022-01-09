@@ -18,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -40,11 +39,6 @@ public class AlkApiController {
     public boolean ping() {
         LOGGER.info("ping called");
         return true;
-    }
-
-    @RequestMapping(value = "/fetchTable", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Map<String, String>  fetchTable() {
-        return service.fetchTable("https://en.wikipedia.org/wiki/Elon_Musk");
     }
 
     @RequestMapping(value = "/testFactCheck", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})

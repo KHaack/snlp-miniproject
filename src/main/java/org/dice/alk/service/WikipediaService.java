@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class WikipediaService {
@@ -48,41 +46,27 @@ public class WikipediaService {
             Elements elements = document.select("#bodyContent .mw-parser-output p");
 
             WikipediaDocument wiki = new WikipediaDocument(entity);
+
+            // paragraphs
             for (Element element : elements) {
                 wiki.getParagraphs().add(element.text());
+            }
+
+            // infobox
+            elements = document.select(".infobox.vcard tr");
+            for (Element element :
+                    elements) {
+
+                Elements th = element.getElementsByTag("th");
+                Elements td = element.getElementsByTag("td");
+
+                if (!th.isEmpty() && !td.isEmpty()) {
+                    wiki.getInfobox().put(th.text(), td.text());
+                }
             }
             return wiki;
         } catch (Exception ex) {
             throw new WikipediaException("unable to fetch from wikipedia.", ex);
         }
     }
-
-    /**
-     * Get the table about content of a wikipedia page
-     *
-     * @param url
-     * @return
-     */
-    public Map<String, String> fetchTable(String url) {
-        Map<String, String> content = new HashMap<>();
-        try {
-            Document document = getDocument(url);
-            Elements elements = document.select(".infobox.vcard tr");
-            for (Element element:
-                    elements) {
-
-                Elements th = element.getElementsByTag("th");
-                Elements td = element.getElementsByTag("td");
-
-                if(!th.isEmpty() && !td.isEmpty()){
-                    content.put(th.text(), td.text());
-                }
-            }
-        } catch (IOException | Error e) {
-            e.printStackTrace();
-        }
-
-        return content;
-    }
-
 }

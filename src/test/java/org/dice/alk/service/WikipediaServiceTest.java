@@ -8,10 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Map;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItem;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -30,12 +29,6 @@ public class WikipediaServiceTest {
         assertThat(document.getParagraphs(), hasItem(containsString("Elon Reeve Musk FRS")));
         assertThat(document.getParagraphs(), hasItem(containsString("In 2002, Musk founded SpaceX")));
         assertThat(document.getParagraphs(), hasItem(containsString("Elon Reeve Musk was born on")));
-    }
-
-    @Test
-    public void festTableTest() {
-        Map<String, String> table = service.fetchTable("https://en.wikipedia.org/wiki/Elon_Musk");
-        assertThat(table, hasEntry("Education", "University of Pennsylvania (BS, BA)"));
     }
 
 }

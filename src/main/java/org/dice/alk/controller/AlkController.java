@@ -112,6 +112,7 @@ public class AlkController {
         int countLess2 = 0;
         int countMore2 = 0;
         int count = 0;
+        int countRelations = 0;
         Map<String, Integer> countEntities = new HashMap<>();
 
         for (Sentence sentence : sentences) {
@@ -142,6 +143,12 @@ public class AlkController {
                     }
                 }
 
+                if (sentence.getRelations().size() > 0) {
+                    countRelations++;
+                } else {
+                    builder.append("no relation.<br/>");
+                }
+
                 if (sentence.getEntities().size() < 2) {
                     countLess2++;
                 } else if (sentence.getEntities().size() > 2) {
@@ -168,6 +175,10 @@ public class AlkController {
 
         builder.append("<h1>count more 2 entities:");
         builder.append(countMore2);
+        builder.append("</h1>");
+
+        builder.append("<h1>relations:");
+        builder.append(countRelations);
         builder.append("</h1>");
 
         builder.append("<h1>total:");

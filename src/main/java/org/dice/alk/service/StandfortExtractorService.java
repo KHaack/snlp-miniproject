@@ -6,6 +6,7 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import org.dice.alk.exception.StandfortExtractorException;
 import org.dice.alk.model.Entity;
 import org.dice.alk.model.Sentence;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,27 @@ import java.util.List;
 import java.util.Properties;
 
 @Service
-public class StanfordExtractorService {
+public class StandfortExtractorService {
     //
     // tipple: tokenize,ssplit,pos,lemma,depparse,natlog,openie
     // coreference: tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink
     // relation: relation
     private static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink,relation";
+
+    public Sentence extract(Sentence sentence) {
+        List<Sentence> list = this.extract(sentence.getSentenceText());
+
+        if (list.size() > 1) {
+            throw new StandfortExtractorException("extracted multiple senteces.");
+        }
+
+        sentence.setRelations(list.get(0).getRelations());
+        sentence.setEntities(list.get(0).getEntities());
+        sentence.setPredicate(list.get(0).getPredicate());
+        sentence.setFactID(list.get(0).getFactID());
+
+        return sentence;
+    }
 
     /**
      * Extract the sentences from the passed text.
@@ -55,12 +71,15 @@ public class StanfordExtractorService {
 
             // mentions
             for (CoreEntityMention mention : s.entityMentions()) {
-                Entity entity = new Entity();
-                entity.setText(mention.text());
-                entity.setWikipediaTitle(mention.entity());
-                sentence.getEntities().add(entity);
+                if (null != mention.entity()) {
+                    Entity entity = new Entity();
+                    entity.setText(mention.text());
+                    entity.setWikipediaTitle(mention.entity());
+                    sentence.getEntities().add(entity);
+                }
             }
 
+            sentence.pruneEntities();
             sentences.add(sentence);
         }
 

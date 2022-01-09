@@ -3,8 +3,6 @@ package org.dice.alk.model;
 import org.apache.jena.rdf.model.*;
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,7 +28,7 @@ public class Sentence {
 	/**
 	 * The sentence's entities
 	 */
-	private List<Entity> entities = new LinkedList<>();
+	private Set<Entity> entities = new HashSet<>();
 
 	/**
 	 * The relations in this sentence.
@@ -104,8 +102,8 @@ public class Sentence {
         this.factID = factID;
     }
 
-    public int getFactID() {
-        return factID;
+	public Integer getFactID() {
+		return factID;
     }
 
     public String getSentenceText() {
@@ -120,11 +118,11 @@ public class Sentence {
 		this.score = score;
 	}
 
-	public List<Entity> getEntities() {
+	public Set<Entity> getEntities() {
 		return entities;
 	}
 
-	public void setEntities(List<Entity> entities) {
+	public void setEntities(Set<Entity> entities) {
 		this.entities = entities;
 	}
 
@@ -142,5 +140,33 @@ public class Sentence {
 
 	public void setRelations(Set<String> relations) {
 		this.relations = relations;
+	}
+
+	/**
+	 * Prune the entities of this sentence.
+	 */
+	public void pruneEntities() {
+		/*
+		 * Removes entities contained in others.
+		 * The sentence 'Foo's birth place is Denison, Texas'  should result in 'Denison, Texas'
+		 * and should not contain 'Texas'.
+		 */
+		Set<Entity> pruneEntities = new HashSet<>();
+
+		for (Entity e1 : this.getEntities()) {
+			boolean contains = false;
+
+			for (Entity e2 : this.getEntities()) {
+				if (e1 != e2 && e2.getWikipediaTitle().contains(e1.getText())) {
+					contains = true;
+				}
+			}
+
+			if (!contains) {
+				pruneEntities.add(e1);
+			}
+		}
+
+		this.setEntities(pruneEntities);
 	}
 }

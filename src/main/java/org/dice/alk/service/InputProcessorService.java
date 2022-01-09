@@ -7,10 +7,7 @@ import org.dice.alk.model.Sentence;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class is responsible for parsing and processing the input string.
@@ -115,7 +112,7 @@ public class InputProcessorService {
 	 * @return
 	 */
 	public Map<Entity, String> getWikipediaURLSAsSet(Sentence sentence) {
-		List<Entity> relevantItems = sentence.getEntities();
+		Set<Entity> relevantItems = sentence.getEntities();
 		Map<Entity, String> wikipediaPaths = new HashMap<>();
 
 		for (Entity spot : relevantItems) {

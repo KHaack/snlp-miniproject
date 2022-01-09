@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FactCheckerServiceTest {
 
     @Autowired
-    private StanfordExtractorService stanfordExtractorService;
+    private StandfortExtractorService stanfordExtractorService;
 
     @Autowired
     private FactCheckerService factCheck;

@@ -27,7 +27,7 @@ public class FactCheckerService {
     private InputProcessorService inputProcessor;
 
     @Autowired
-    private StanfordExtractorService stanfordExtractorService;
+    private StandfortExtractorService stanfordExtractorService;
 
     @Autowired
     private WikipediaService wikipedia;

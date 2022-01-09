@@ -16,10 +16,10 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-public class StanfordExtractorServiceTest {
+public class StandfortExtractorServiceTest {
 
     @Autowired
-    private StanfordExtractorService service;
+    private StandfortExtractorService service;
 
     @Test
     public void ner1Test() {

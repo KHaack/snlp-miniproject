@@ -1,4 +1,4 @@
-package org.dice.alk.controller;
+package org.dice.alk.api;
 
 import org.apache.jena.rdf.model.StmtIterator;
 import org.dice.alk.io.IOUtils;
@@ -62,5 +62,4 @@ public class AlkApiController {
         }
         return strings;
     }
-
 }

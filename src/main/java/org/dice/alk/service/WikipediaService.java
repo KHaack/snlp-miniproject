@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class WikipediaService {
@@ -28,6 +30,7 @@ public class WikipediaService {
     @Value("${wikipedia.timeout}")
     private int timeout;
 
+    private Map<String, WikipediaDocument> cache = new HashMap<>();
 
     private Document getDocument(String url) throws IOException {
         LOGGER.info("fetch wikipedia document from " + url);
@@ -41,6 +44,10 @@ public class WikipediaService {
      * @return
      */
     public WikipediaDocument fetch(Entity entity) {
+        if (this.cache.containsKey(entity.getWikipediaTitle())) {
+            return this.cache.get(entity.getWikipediaTitle());
+        }
+
         try {
             Document document = getDocument(this.wikipediaEndpoint + entity.getWikipediaTitle());
             Elements elements = document.select("#bodyContent .mw-parser-output p");
@@ -66,6 +73,8 @@ public class WikipediaService {
             }
 
             wiki.getParagraphs().add(0, wiki.getInfoBoxAsString());
+
+            this.cache.put(entity.getWikipediaTitle(), wiki);
             return wiki;
         } catch (Exception ex) {
             throw new WikipediaException("unable to fetch from wikipedia.", ex);

@@ -20,7 +20,7 @@ import java.util.Set;
 @Service
 public class FactCheckerService {
 
-    private final static int MAX_PARAGRAPH_DEPTH = 6;
+    private final static int MAX_PARAGRAPH_DEPTH = 15;
 
     /**
      * The logger.
@@ -74,7 +74,6 @@ public class FactCheckerService {
 
             Statement statement = sentence.getStatementFromSentence();
             model.add(statement);
-
 
             i++;
 

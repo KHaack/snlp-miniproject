@@ -76,6 +76,7 @@ public class AlkController {
         builder.append("<body>");
 
         int count = 0;
+        int countWrong = 0;
         for (Sentence sentence : sentences) {
             double shouldResult = sentence.getScore();
 
@@ -93,6 +94,7 @@ public class AlkController {
                 double diff = shouldResult - score;
                 if (diff > 0.2 || diff < -0.2) {
                     builder.append("!!!");
+                    countWrong++;
                 }
 
                 builder.append(sentence.getSentenceText());
@@ -115,6 +117,10 @@ public class AlkController {
 
         builder.append("<h1>total:");
         builder.append(count);
+        builder.append("</h1>");
+
+        builder.append("<h1>wrong:");
+        builder.append(countWrong);
         builder.append("</h1>");
 
         builder.append("</body>");

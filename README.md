@@ -46,9 +46,13 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-## test if the server is running
+## access
 
-http://localhost:8080/api/ping
+- ping => http://localhost:8080/api/ping
+- factCheck training file (.ttl-output) => http://localhost:8080/runFileTraining
+- factCheck test file (.ttl-output) => http://localhost:8080/runFileTest
+- factCheck training file (.html-output) => http://localhost:8080/runFactCheck
+- ner training file (.html-output) => http://localhost:8080/runNer
 
 ## licenses
 

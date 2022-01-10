@@ -21,16 +21,16 @@ public class TagMeExtractorServiceTest {
 
     @Test
     public void tagme1Test() {
-        String text = "Obama visited U.K. in March.";
+        String text = "Mean Girls stars Tina Fey.";
         TagMeResult result = this.tagMeExtractorService.extract(text);
 
         assertThat(result.getAnnotations(), hasItem(allOf(
-                hasProperty("spot", equalTo("U.K.")),
-                hasProperty("title", equalTo("United_Kingdom"))
+                hasProperty("spot", equalTo("Mean Girls")),
+                hasProperty("title", equalTo("Mean_Girls"))
         )));
         assertThat(result.getAnnotations(), hasItem(allOf(
-                hasProperty("spot", equalTo("Obama")),
-                hasProperty("title", equalTo("Barack_Obama"))
+                hasProperty("spot", equalTo("Tina Fey")),
+                hasProperty("title", equalTo("Tina_Fey"))
         )));
     }
 

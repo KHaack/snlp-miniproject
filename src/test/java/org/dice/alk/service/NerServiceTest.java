@@ -58,7 +58,7 @@ public class NerServiceTest {
         assertThat(result, hasItem(hasProperty("wikipediaTitle", equalTo("Frank_Herbert"))));
 
         assertThat(result, hasItem(hasProperty("text", containsString("Unusual Angle"))));
-        assertThat(result, hasItem(hasProperty("wikipediaTitle", equalTo("Unusual_Angle"))));
+        assertThat(result, hasItem(hasProperty("wikipediaTitle", equalTo("An_Unusual_Angle"))));
     }
 
     @Test

@@ -1,5 +1,9 @@
 package org.dice.alk.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import org.dice.alk.model.Sentence;
 import org.dice.alk.service.FactCheckerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,5 +31,15 @@ public class AlkApiController {
     public boolean ping() {
         LOGGER.info("ping called");
         return true;
+    }
+
+    @RequestMapping(value = "/factCheck", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String factCheck(@RequestParam(name = "sentence") String text) throws JsonProcessingException {
+        Sentence sentence = new Sentence(null, text);
+        double score = this.factCheckerService.factCheck(sentence);
+        sentence.setScore(score);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        return ow.writeValueAsString(sentence);
     }
 }

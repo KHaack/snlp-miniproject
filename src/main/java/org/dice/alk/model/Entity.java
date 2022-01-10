@@ -1,11 +1,14 @@
 package org.dice.alk.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class Entity {
     private String text;
     private String wikipediaTitle;
 
+    @JsonProperty("text")
     public String getText() {
         return text;
     }
@@ -14,6 +17,7 @@ public class Entity {
         this.text = text;
     }
 
+    @JsonProperty("wikipediaTitle")
     public String getWikipediaTitle() {
         return wikipediaTitle;
     }

@@ -1,5 +1,7 @@
 package org.dice.alk.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.jena.rdf.model.*;
 
 import java.util.HashSet;
@@ -11,7 +13,9 @@ import java.util.Set;
 public class Sentence {
 
 	private final String FACT_URI = "http://swc2017.aksw.org/task2/dataset/";
+
 	private final Property TRUTH_VALUE = ResourceFactory.createProperty("http://swc2017.aksw.org/hasTruthValue");
+
 	/**
 	 * Fact ID
 	 */
@@ -34,11 +38,6 @@ public class Sentence {
 	 * The relations in this sentence.
 	 */
 	private Set<String> relations = new HashSet<>();
-
-	/**
-	 * The sentence's relation
-	 */
-	private String predicate;
 
 	/**
 	 * Constructor.
@@ -90,6 +89,7 @@ public class Sentence {
 	 *
 	 * @return
 	 */
+	@JsonIgnore
 	public Statement getStatementFromSentence() {
 		String factURI = FACT_URI + factID;
 		Resource subject = ResourceFactory.createResource(factURI);
@@ -97,29 +97,22 @@ public class Sentence {
 		return ResourceFactory.createStatement(subject, TRUTH_VALUE, object);
 	}
 
-    /**
-     * Indicates whether the passed entity is inside the sentence or not.
-     *
-     * @param entity The entity to check.
-     * @return
-     */
-    public boolean entityExists(Entity entity) {
-        return this.entities.contains(entity);
-    }
-
     public void setFactID(Integer factID) {
         this.factID = factID;
     }
 
+	@JsonProperty("factId")
 	public Integer getFactID() {
 		return factID;
-    }
+	}
 
-    public String getSentenceText() {
-        return sentenceText;
-    }
+	@JsonProperty("sentenceText")
+	public String getSentenceText() {
+		return sentenceText;
+	}
 
-    public double getScore() {
+	@JsonProperty("score")
+	public double getScore() {
 		return score;
 	}
 
@@ -127,6 +120,7 @@ public class Sentence {
 		this.score = score;
 	}
 
+	@JsonProperty("entities")
 	public Set<Entity> getEntities() {
 		return entities;
 	}
@@ -135,14 +129,7 @@ public class Sentence {
 		this.entities = entities;
 	}
 
-	public String getPredicate() {
-		return predicate;
-	}
-
-	public void setPredicate(String predicate) {
-		this.predicate = predicate;
-	}
-
+	@JsonProperty("relations")
 	public Set<String> getRelations() {
 		return relations;
 	}

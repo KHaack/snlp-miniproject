@@ -18,12 +18,8 @@ public class IOUtils {
 	 * @param model              The {@link Model} object.
 	 * @param outputStreamWriter Filepath of the saved object.
 	 */
-	public static void writeResultsToFile(Model model, OutputStreamWriter outputStreamWriter) {
-		try (OutputStreamWriter out = outputStreamWriter) {
-			model.write(out, "N-TRIPLES");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public static void writeResultsToFile(Model model, Writer outputStreamWriter) {
+		model.write(outputStreamWriter, "N-TRIPLES");
 	}
 
 	/**

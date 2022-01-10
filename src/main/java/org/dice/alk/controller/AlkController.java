@@ -9,14 +9,17 @@ import org.dice.alk.service.RelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -42,10 +45,26 @@ public class AlkController {
     @Autowired
     private FactCheckerService factCheckerService;
 
+    @RequestMapping(value = "/runFileTraining", method = RequestMethod.GET, produces = {MediaType.TEXT_PLAIN_VALUE})
+    public void runFileTraining(HttpServletResponse response) throws IOException {
+        String inputFile = "./data/SNLP2020_training.tsv";
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=result.ttl");
+        this.factCheckerService.factCheck(new FileReader(inputFile), response.getWriter());
+    }
+
+    @RequestMapping(value = "/runFileTest", method = RequestMethod.GET, produces = {MediaType.TEXT_PLAIN_VALUE})
+    public void runFileTest(HttpServletResponse response) throws IOException {
+        String inputFile = "./data/SNLP2020_test.tsv";
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=result.ttl");
+        this.factCheckerService.factCheck(new FileReader(inputFile), response.getWriter());
+    }
+
     @RequestMapping(value = "/runFactCheck", method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE})
     @ResponseBody
     public String runFactCheck() throws FileNotFoundException {
-        String inputFile = "./data/SNLP2020_training_test.tsv";
+        String inputFile = "./data/SNLP2020_training.tsv";
         InputStreamReader inputStreamReader = new FileReader(inputFile);
         Set<Sentence> sentences = IOUtils.readFromFile(inputStreamReader);
 
@@ -58,18 +77,27 @@ public class AlkController {
 
         int count = 0;
         for (Sentence sentence : sentences) {
+            double shouldResult = sentence.getScore();
+
             builder.append("<p>");
 
             try {
-                sentence.setEntities(this.nerService.extractSentence(sentence.getSentenceText()));
-                this.relationService.extractRelation(sentence);
-
                 double score = this.factCheckerService.factCheck(sentence);
+                sentence.setScore(score);
+
                 builder.append(df.format(score));
-                builder.append(" ");
+                builder.append(" (");
+                builder.append(df.format(shouldResult));
+                builder.append(" ) ");
+
+                double diff = shouldResult - score;
+                if (diff > 0.2 || diff < -0.2) {
+                    builder.append("!!!");
+                }
+
                 builder.append(sentence.getSentenceText());
 
-                LOGGER.info("Score => {}", df.format(score));
+                LOGGER.info("Score => {} should {}", df.format(score), df.format(shouldResult));
 
                 count++;
 
@@ -98,7 +126,7 @@ public class AlkController {
     @RequestMapping(value = "/runNer", method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE})
     @ResponseBody
     public String runNer() throws FileNotFoundException {
-        String inputFile = "./data/SNLP2020_training_test.tsv";
+        String inputFile = "./data/SNLP2020_training.tsv";
         InputStreamReader inputStreamReader = new FileReader(inputFile);
         Set<Sentence> sentences = IOUtils.readFromFile(inputStreamReader);
 

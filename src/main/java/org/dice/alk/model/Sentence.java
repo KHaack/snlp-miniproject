@@ -71,9 +71,18 @@ public class Sentence {
 		if (input.length < 2) {
 			throw new IllegalArgumentException("Cannot create sentence from input.");
 		}
+
 		int id = Integer.parseInt(input[0].trim());
 		String text = input[1].trim();
-		return new Sentence(id, text);
+
+		Sentence sentence = new Sentence(id, text);
+		if (input.length >= 3) {
+			if (!input[2].isEmpty()) {
+				sentence.setScore(Double.parseDouble(input[2]));
+			}
+		}
+
+		return sentence;
 	}
 
 	/**

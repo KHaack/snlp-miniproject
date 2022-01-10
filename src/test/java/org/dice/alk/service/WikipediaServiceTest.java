@@ -9,8 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -26,9 +25,11 @@ public class WikipediaServiceTest {
         entity.setWikipediaTitle("Elon_Musk");
 
         WikipediaDocument document = service.fetch(entity);
-        assertThat(document.getParagraphs(), hasItem(containsString("Elon Reeve Musk FRS")));
-        assertThat(document.getParagraphs(), hasItem(containsString("In 2002, Musk founded SpaceX")));
-        assertThat(document.getParagraphs(), hasItem(containsString("Elon Reeve Musk was born on")));
+        assertThat(document.getParagraphs(), hasItem(hasProperty("text", containsString("Elon Reeve Musk FRS"))));
+        assertThat(document.getParagraphs(), hasItem(hasProperty("text", containsString("In 2002, Musk founded SpaceX"))));
+        assertThat(document.getParagraphs(), hasItem(hasProperty("text", containsString("Elon Reeve Musk was born on"))));
+
+        assertThat(document.getParagraphs(), hasItem(hasProperty("urls", hasItem(equalTo("SpaceX")))));
     }
 
 }

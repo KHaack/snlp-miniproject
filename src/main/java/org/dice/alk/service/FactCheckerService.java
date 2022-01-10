@@ -7,14 +7,14 @@ import org.dice.alk.io.IOUtils;
 import org.dice.alk.model.Entity;
 import org.dice.alk.model.Sentence;
 import org.dice.alk.model.WikipediaDocument;
+import org.dice.alk.model.WikipediaParagraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.List;
+import java.io.Writer;
 import java.util.Set;
 
 @Service
@@ -31,7 +31,7 @@ public class FactCheckerService {
     private NerService nerService;
 
     @Autowired
-    private StandfortExtractorService stanfordExtractorService;
+    private RelationService relationService;
 
     @Autowired
     private WikipediaService wikipedia;
@@ -42,7 +42,7 @@ public class FactCheckerService {
      * @param input  input.
      * @param output Output filepath.
      */
-    public void factCheck(InputStreamReader input, OutputStreamWriter output) {
+    public void factCheck(InputStreamReader input, Writer output) {
         // read sentences from given file
         Set<Sentence> sentences = IOUtils.readFromFile(input);
 
@@ -64,16 +64,17 @@ public class FactCheckerService {
 
         int i = 0;
         for (Sentence sentence : sentences) {
-            List<Sentence> extraction = this.stanfordExtractorService.extract(sentence.getSentenceText());
-
-            sentence.setEntities(extraction.get(0).getEntities());
-            sentence.setRelations(extraction.get(0).getRelations());
-            sentence.setScore(this.factCheck(sentence));
-
+            try {
+                sentence.setScore(this.factCheck(sentence));
+            } catch (Exception ex) {
+                LOGGER.warn("error  {} in {}", ex.getMessage(), sentence.getSentenceText());
+                sentence.setScore(0.5);
+            }
             LOGGER.info("{} => {}", sentence.getScore(), sentence.getSentenceText());
 
             Statement statement = sentence.getStatementFromSentence();
             model.add(statement);
+
 
             i++;
 
@@ -93,27 +94,21 @@ public class FactCheckerService {
      * @param paragraph
      * @return
      */
-    private Double factCheckParagraph(Sentence toCheck, WikipediaDocument document, String paragraph) {
-        List<Sentence> sentences = this.nerService.extractParagraph(paragraph);
-
-        // 4. check entity exists
-        for (int i = 0; i < sentences.size(); i++) {
-            int foundEntities = 0;
-            Sentence sentence = sentences.get(i);
-
-            for (Entity entity : toCheck.getEntities()) {
-                // skip entity from wikipedia article
-                if (!entity.equals(document.getEntity())) {
-                    if (sentence.entityExists(entity)) {
-                        foundEntities++;
-                    }
+    private Double factCheckParagraph(Sentence toCheck, WikipediaDocument document, WikipediaParagraph paragraph) {
+        int foundEntities = 0;
+        for (Entity entity : toCheck.getEntities()) {
+            // 4. check entity exists
+            // skip entity from wikipedia article
+            if (!entity.equals(document.getEntity())) {
+                if (paragraph.getUrls().contains(entity.getWikipediaTitle())) {
+                    foundEntities++;
                 }
             }
+        }
 
-            if (foundEntities >= 1) {
-                LOGGER.info("possible: " + sentence.getSentenceText());
-                return 1.0;
-            }
+        if (foundEntities >= 1) {
+            LOGGER.info("possible: " + paragraph.getText());
+            return 1.0;
         }
 
         return null;
@@ -127,20 +122,23 @@ public class FactCheckerService {
      */
     public double factCheck(Sentence toCheck) {
         LOGGER.info("fact check for: " + toCheck.getSentenceText());
+        Set<Entity> entities = this.nerService.extractSentence(toCheck.getSentenceText());
+        toCheck.setEntities(entities);
+        this.relationService.extractRelation(toCheck);
 
         // to checkable with only one entity
         if (toCheck.getEntities().size() < 2) {
             return 0.5;
         }
 
+        // check without relation
         for (Entity entity : toCheck.getEntities()) {
             LOGGER.info("check wikipedia for: " + entity.getWikipediaTitle());
             WikipediaDocument document = this.wikipedia.fetch(entity);
 
             // check paragraphs
             for (int i = 0; i < Math.min(document.getParagraphs().size(), MAX_PARAGRAPH_DEPTH); i++) {
-                String paragraph = document.getParagraphs().get(i);
-                Double result = this.factCheckParagraph(toCheck, document, paragraph);
+                Double result = this.factCheckParagraph(toCheck, document, document.getParagraphs().get(i));
 
                 if (null != result) {
                     return result;

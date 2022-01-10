@@ -4,7 +4,6 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.dice.alk.io.IOUtils;
 import org.dice.alk.model.Sentence;
 import org.dice.alk.service.FactCheckerService;
-import org.dice.alk.service.WikipediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,9 @@ public class AlkApiController {
      * The logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(AlkApiController.class);
-    @Autowired
-    private WikipediaService service;
+
     @Autowired
     private FactCheckerService factCheckerService;
-
-
 
     @RequestMapping(value = "/ping", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public boolean ping() {

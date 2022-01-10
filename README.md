@@ -34,7 +34,7 @@ docker-compose up
 
 http://localhost:5601
 
-## run tests
+## run unit tests
 
 ```shell
 mvn clean test
@@ -46,13 +46,17 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-## access
+## test runs
 
-- ping => http://localhost:8080/api/ping
 - factCheck training file (.ttl-output) => http://localhost:8080/runFileTraining
 - factCheck test file (.ttl-output) => http://localhost:8080/runFileTest
 - factCheck training file (.html-output) => http://localhost:8080/runFactCheck
 - ner training file (.html-output) => http://localhost:8080/runNer
+
+## api access
+
+- ping => http://localhost:8080/api/ping
+- factCheck => http://localhost:8080/api/factCheck?sentence={text}
 
 ## licenses
 

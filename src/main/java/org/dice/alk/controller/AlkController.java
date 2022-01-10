@@ -47,7 +47,7 @@ public class AlkController {
 
     @RequestMapping(value = "/runFileTraining", method = RequestMethod.GET, produces = {MediaType.TEXT_PLAIN_VALUE})
     public void runFileTraining(HttpServletResponse response) throws IOException {
-        String inputFile = "./data/SNLP2020_training.tsv";
+        String inputFile = "src/main/resources/SNLP2020_training.tsv";
 
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=result.ttl");
         this.factCheckerService.factCheck(new FileReader(inputFile), response.getWriter());
@@ -55,7 +55,7 @@ public class AlkController {
 
     @RequestMapping(value = "/runFileTest", method = RequestMethod.GET, produces = {MediaType.TEXT_PLAIN_VALUE})
     public void runFileTest(HttpServletResponse response) throws IOException {
-        String inputFile = "./data/SNLP2020_test.tsv";
+        String inputFile = "src/main/resources/SNLP2020_test.tsv";
 
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=result.ttl");
         this.factCheckerService.factCheck(new FileReader(inputFile), response.getWriter());
@@ -64,7 +64,7 @@ public class AlkController {
     @RequestMapping(value = "/runFactCheck", method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE})
     @ResponseBody
     public String runFactCheck() throws FileNotFoundException {
-        String inputFile = "./data/SNLP2020_training.tsv";
+        String inputFile = "src/main/resources/SNLP2020_training.tsv";
         InputStreamReader inputStreamReader = new FileReader(inputFile);
         Set<Sentence> sentences = IOUtils.readFromFile(inputStreamReader);
 
@@ -126,7 +126,7 @@ public class AlkController {
     @RequestMapping(value = "/runNer", method = RequestMethod.GET, produces = {MediaType.TEXT_HTML_VALUE})
     @ResponseBody
     public String runNer() throws FileNotFoundException {
-        String inputFile = "./data/SNLP2020_training.tsv";
+        String inputFile = "src/main/resources/SNLP2020_training.tsv";
         InputStreamReader inputStreamReader = new FileReader(inputFile);
         Set<Sentence> sentences = IOUtils.readFromFile(inputStreamReader);
 

@@ -39,7 +39,7 @@ public class AlkApiController {
 
     @RequestMapping(value = "/testFactCheck", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<String> testFactCheck() throws FileNotFoundException {
-        String inputFile = "./data/SNLP2020_training_test.tsv";
+        String inputFile = "src/main/resources/SNLP2020_training_test.tsv";
         FileReader inputStreamReader = new FileReader(inputFile);
         Set<Sentence> sentences = IOUtils.readFromFile(inputStreamReader);
 

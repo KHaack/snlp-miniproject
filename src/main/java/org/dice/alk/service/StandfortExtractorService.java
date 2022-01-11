@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -20,6 +21,19 @@ public class StandfortExtractorService {
     // coreference: tokenize,ssplit,pos,lemma,ner,parse,dcoref,entitylink
     // relation: relation
     private static final String ANNOTATORS = "tokenize,ssplit,pos,lemma,ner,parse,entitylink,dcoref";
+
+    /**
+     * The nlp pipeline.
+     */
+    private StanfordCoreNLP pipeline;
+
+    @PostConstruct
+    public void initialize() {
+        Properties props = new Properties();
+        props.setProperty("annotators", ANNOTATORS);
+
+        this.pipeline = new StanfordCoreNLP(props);
+    }
 
     @Async
     public Future<Set<Entity>> extractAsync(String text) {
@@ -42,13 +56,8 @@ public class StandfortExtractorService {
      * @return
      */
     public List<Sentence> extract(String text) {
-        Properties props = new Properties();
-        props.setProperty("annotators", ANNOTATORS);
-
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
         CoreDocument document = new CoreDocument(text);
-        pipeline.annotate(document);
+        this.pipeline.annotate(document);
 
         /*
          * sentences

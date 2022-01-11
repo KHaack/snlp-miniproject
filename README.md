@@ -75,6 +75,12 @@ Internal WordNet API access.
 - GET http://localhost:5679/substance_holonyms/1/{word}
 - GET http://localhost:5679/causes/1/{word}
 
+## Controller explanation
+
+- AlkApiController: for the API calls, to running a "real" fact check
+- AlkController: for delivering the UI
+- DemoController: for running the test & training datasets and provide a download of the result
+
 ## licenses
 
 - GNU v3 https://github.com/stanfordnlp/CoreNLP/blob/main/LICENSE.txt

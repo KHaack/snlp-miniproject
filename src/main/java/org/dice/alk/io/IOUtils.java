@@ -32,8 +32,6 @@ public class IOUtils {
 		Set<Sentence> sentences = new HashSet<>();
 		try (BufferedReader br = new BufferedReader(inputStreamReader)) {
 			String line = br.readLine();
-			// because we want to ignore the 1st row
-			line = br.readLine();
 			while (line != null) {
 				if (line.isBlank()) {
 					continue;

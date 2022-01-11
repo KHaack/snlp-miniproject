@@ -1,12 +1,11 @@
 package org.dice.alk.model;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.jena.rdf.model.*;
 
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Holds the sentence identification elements
@@ -14,11 +13,13 @@ import org.apache.jena.rdf.model.Statement;
 public class Sentence {
 
 	private final String FACT_URI = "http://swc2017.aksw.org/task2/dataset/";
+
 	private final Property TRUTH_VALUE = ResourceFactory.createProperty("http://swc2017.aksw.org/hasTruthValue");
+
 	/**
 	 * Fact ID
 	 */
-	private int factID;
+	private Integer factID;
 	/**
 	 * The sentence text
 	 */
@@ -31,22 +32,31 @@ public class Sentence {
 	/**
 	 * The sentence's entities
 	 */
-	private List<TagMeSpot> entities;
+	private Set<Entity> entities = new HashSet<>();
 
 	/**
-	 * The sentence's relation
+	 * The relations in this sentence.
 	 */
-	private String predicate;
+	private Set<String> relations = new HashSet<>();
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @param factID       The fact ID.
 	 * @param sentenceText The sentence text.
 	 */
-	public Sentence(int factID, String sentenceText) {
+	public Sentence(Integer factID, String sentenceText) {
 		this.factID = factID;
 		this.sentenceText = sentenceText;
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param sentenceText The sentence text.
+	 */
+	public Sentence(String sentenceText) {
+		this(null, sentenceText);
 	}
 
 	/**
@@ -60,9 +70,18 @@ public class Sentence {
 		if (input.length < 2) {
 			throw new IllegalArgumentException("Cannot create sentence from input.");
 		}
+
 		int id = Integer.parseInt(input[0].trim());
 		String text = input[1].trim();
-		return new Sentence(id, text);
+
+		Sentence sentence = new Sentence(id, text);
+		if (input.length >= 3) {
+			if (!input[2].isEmpty()) {
+				sentence.setScore(Double.parseDouble(input[2]));
+			}
+		}
+
+		return sentence;
 	}
 
 	/**
@@ -70,6 +89,7 @@ public class Sentence {
 	 *
 	 * @return
 	 */
+	@JsonIgnore
 	public Statement getStatementFromSentence() {
 		String factURI = FACT_URI + factID;
 		Resource subject = ResourceFactory.createResource(factURI);
@@ -77,16 +97,21 @@ public class Sentence {
 		return ResourceFactory.createStatement(subject, TRUTH_VALUE, object);
 	}
 
-	// getters and setters
+    public void setFactID(Integer factID) {
+        this.factID = factID;
+    }
 
-	public int getFactID() {
+	@JsonProperty("factId")
+	public Integer getFactID() {
 		return factID;
 	}
 
+	@JsonProperty("sentenceText")
 	public String getSentenceText() {
 		return sentenceText;
 	}
 
+	@JsonProperty("score")
 	public double getScore() {
 		return score;
 	}
@@ -95,20 +120,21 @@ public class Sentence {
 		this.score = score;
 	}
 
-	public List<TagMeSpot> getEntities() {
+	@JsonProperty("entities")
+	public Set<Entity> getEntities() {
 		return entities;
 	}
 
-	public void setEntities(List<TagMeSpot> entities) {
+	public void setEntities(Set<Entity> entities) {
 		this.entities = entities;
 	}
 
-	public String getPredicate() {
-		return predicate;
+	@JsonProperty("relations")
+	public Set<String> getRelations() {
+		return relations;
 	}
 
-	public void setPredicate(String predicate) {
-		this.predicate = predicate;
+	public void setRelations(Set<String> relations) {
+		this.relations = relations;
 	}
-
 }

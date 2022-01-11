@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+</head>
+<body>
+
+<form id="formFactCheck">
+    <h1>FactCheck</h1>
+    <label for="sentence">Fact check one sentence:</label>
+    <br/>
+    <textarea cols="100"
+              id="sentence"
+              maxlength="200"
+              name="sentence"
+              required
+              rows="3">Barack Obama is the president of the USA.</textarea>
+    <br/>
+    <input id="submit" type="submit"/>
+</form>
+
+<hr/>
+
+<label for="result">Result:</label>
+<br/>
+<textarea cols="100" id="result" readonly rows="10"></textarea>
+
+<script type="application/javascript">
+    document.querySelector("#formFactCheck").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const inputSentence = document.querySelector("#sentence");
+        const inputResult = document.querySelector("#result");
+        const buttonSubmit = document.querySelector("#submit");
+
+        try {
+            buttonSubmit.disabled = true;
+
+            const sentence = inputSentence.value;
+            const url = "/api/factCheck?sentence=" + sentence;
+            const xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.open("GET", url, false);
+            xmlHttp.send(null);
+
+            inputResult.value = xmlHttp.responseText;
+        } catch (e) {
+            inputResult.value = e.message;
+            throw new Error(e.message);
+        } finally {
+            buttonSubmit.disabled = false;
+        }
+
+        return false;
+    });
+</script>
+
+</body>
+</html>

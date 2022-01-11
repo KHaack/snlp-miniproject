@@ -48,15 +48,21 @@ mvn spring-boot:run
 
 ## test runs
 
-- factCheck training file (.ttl-output) => http://localhost:8080/runFileTraining
-- factCheck test file (.ttl-output) => http://localhost:8080/runFileTest
-- factCheck training file (.html-output) => http://localhost:8080/runFactCheck
-- ner training file (.html-output) => http://localhost:8080/runNer
+- factCheck training file (.ttl-output) => GET http://localhost:8080/runFileTraining
+- factCheck test file (.ttl-output) => GET http://localhost:8080/runFileTest
+- factCheck training file (.html-output) => GET http://localhost:8080/runFactCheck
+- ner training file (.html-output) => GET http://localhost:8080/runNer
 
 ## api access
 
-- ping => http://localhost:8080/api/ping
-- factCheck => http://localhost:8080/api/factCheck?sentence={text}
+- ping => GET http://localhost:8080/api/ping
+- upload => POST http://localhost:8080/api/upload
+- factCheck => GET http://localhost:8080/api/factCheck?sentence={text}
+
+## ui access
+
+- upload => GET http://localhost:8080/upload
+- factCheck => GET http://localhost:8080/factCheck
 
 ## licenses
 

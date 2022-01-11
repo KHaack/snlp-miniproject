@@ -1,10 +1,12 @@
 <!doctype html>
-<html lang="en">
-<head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="head"></th:block>
+
 <body>
-<h1>FactCheck</h1>
+<th:block th:replace="navigation"></th:block>
+
+<h1>Upload</h1>
 <form action="/api/upload" enctype="multipart/form-data" method="post">
     <label for="file">Choose file to upload (.tsv):</label>
     <input accept=".tsv" id="file" name="file" type="file"/>

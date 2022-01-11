@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="en">
-<head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="head"></th:block>
+
 <body>
+<th:block th:replace="navigation"></th:block>
 
 <form id="formFactCheck">
     <h1>FactCheck</h1>
@@ -14,7 +15,7 @@
               maxlength="200"
               name="sentence"
               required
-              rows="3">Barack Obama is the president of the USA.</textarea>
+              rows="3">Barack Obama is the president of the U.S.A.</textarea>
     <br/>
     <input id="submit" type="submit"/>
 </form>

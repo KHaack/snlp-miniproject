@@ -12,7 +12,7 @@ public class AlkController {
         return "upload";
     }
 
-    @RequestMapping(value = "/factCheck", method = RequestMethod.GET)
+    @RequestMapping(value = {"", "/", "/factCheck"}, method = RequestMethod.GET)
     public String factCheck() {
         return "factCheck";
     }

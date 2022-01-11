@@ -2,6 +2,12 @@
 
 Fact checker based on wikipedia corpus, StandfortNLP, TagMe and WordNet.
 
+Steps for running the application
+
+1. start docker container
+2. run spring
+3. 'access via UI' OR 'access the demos (training & test)'
+
 ## pre requirements for the development environment
 
 - java 11
@@ -33,21 +39,21 @@ Starts the spring boot application.
 mvn spring-boot:run
 ```
 
-## ui access
+## access via UI
 
 Access the UI via browser (with enabled js).
 
 - upload => GET http://localhost:8080/upload
 - factCheck => GET http://localhost:8080/factCheck
 
-## demo test runs
+## access the demos (training & test)
 
 Run the the fact checking with the training & test data files of the execise.
 
-- factCheck training file (.ttl-output) => GET http://localhost:8080/runFileTraining
-- factCheck test file (.ttl-output) => GET http://localhost:8080/runFileTest
-- factCheck training file (.html-output) => GET http://localhost:8080/runFactCheck
-- ner training file (.html-output) => GET http://localhost:8080/runNer
+- factCheck training file (.ttl-output) => GET http://localhost:8080/demo/runFileTraining
+- factCheck test file (.ttl-output) => GET http://localhost:8080/demo/runFileTest
+- factCheck training file (.html-output) => GET http://localhost:8080/demo/runFactCheck
+- ner training file (.html-output) => GET http://localhost:8080/demo/runNer
 
 ## api access
 

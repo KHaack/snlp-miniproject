@@ -1,40 +1,25 @@
-# snlp-miniproject
+# SNLP-miniproject WS 2021/2022
 
-## dev installation
+Fact checker based on wikipedia corpus, StandfortNLP, TagMe and WordNet.
+
+## pre requirements for the development environment
 
 - java 11
 - docker
-    - docker-compose
-    - maven 3.1 or higher
-
-## running docker on windows/wsl2 config
-
-```powershell
-wsl -d docker-desktop
-sysctl -w vm.max_map_count=262144
-```
-
-## vserver config
-
-https://stackoverflow.com/questions/16789288/java-lang-outofmemoryerror-unable-to-create-new-native-thread
-
-```bash
-systemctl show --property DefaultTasksMax
-vim /etc/systemd/system.conf
-edit DefaultTasksMax=128
-```
+  - docker-compose
+  - maven 3.1 or higher
 
 ## start docker container
+
+Starts the docker containers necessary for the fact check.
 
 ```shell
 docker-compose up
 ```
 
-## access kibana
-
-http://localhost:5601
-
 ## run unit tests
+
+Maven command, for running the unit tests.
 
 ```shell
 mvn clean test
@@ -42,11 +27,22 @@ mvn clean test
 
 ## run spring
 
+Starts the spring boot application.
+
 ```shell
 mvn spring-boot:run
 ```
 
-## test runs
+## ui access
+
+Access the UI via browser (with enabled js).
+
+- upload => GET http://localhost:8080/upload
+- factCheck => GET http://localhost:8080/factCheck
+
+## demo test runs
+
+Run the the fact checking with the training & test data files of the execise.
 
 - factCheck training file (.ttl-output) => GET http://localhost:8080/runFileTraining
 - factCheck test file (.ttl-output) => GET http://localhost:8080/runFileTest
@@ -55,15 +51,26 @@ mvn spring-boot:run
 
 ## api access
 
+Internal API access.
+
 - ping => GET http://localhost:8080/api/ping
 - upload => POST http://localhost:8080/api/upload
 - factCheck => GET http://localhost:8080/api/factCheck?sentence={text}
 
-## ui access
+## access wordnet
 
-- upload => GET http://localhost:8080/upload
-- factCheck => GET http://localhost:8080/factCheck
+Internal WordNet API access.
+
+- GET http://localhost:5679/synonyms/1/{word}
+- GET http://localhost:5679/hypernyms/1/{word}
+- GET http://localhost:5679/substance_meronyms/1/{word}
+- GET http://localhost:5679/hyponyms/1/{word}
+- GET http://localhost:5679/antonyms/1/{word}
+- GET http://localhost:5679/substance_holonyms/1/{word}
+- GET http://localhost:5679/causes/1/{word}
 
 ## licenses
 
-https://wordnet.princeton.edu/license-and-commercial-use
+- GNU v3 https://github.com/stanfordnlp/CoreNLP/blob/main/LICENSE.txt
+- Apache License 2.0 https://github.com/gammaliu/tagme/blob/master/LICENSE
+- WordNet 3.0 https://wordnet.princeton.edu/license-and-commercial-use

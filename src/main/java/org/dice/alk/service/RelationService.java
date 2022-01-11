@@ -80,14 +80,16 @@ public class RelationService {
 
         String relation = this.getRelation(sentence);
         if (null != relation) {
+            sentence.getRelations().add(relation);
+
             if (!this.cache.containsKey(relation)) {
                 // fill cache
                 this.cache.put(relation, new HashSet<>());
 
-                for (WordNetResult r : this.wordNetService.get(WordNetRequest.synonyms, FILTER_ENTITIES.get(relation))) {
+                for (WordNetResult r : this.wordNetService.get(WordNetRequest.synonyms, relation)) {
                     this.cache.get(relation).add(r.getWord());
                 }
-                for (WordNetResult r : this.wordNetService.get(WordNetRequest.hypernyms, FILTER_ENTITIES.get(relation))) {
+                for (WordNetResult r : this.wordNetService.get(WordNetRequest.hypernyms, relation)) {
                     this.cache.get(relation).add(r.getWord());
                 }
             }
